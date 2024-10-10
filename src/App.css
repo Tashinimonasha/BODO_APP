@@ -1,0 +1,84 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #08abcf;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+/* Header.css */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #cccf08; /* Light blue background */
+  color: #100e0e; /* White text */
+}
+
+.navigation ul {
+  list-style: none; /* Remove bullet points from list */
+  display: flex; /* Display items in a row */
+  gap: 2rem; /* Space between the links */
+  margin: 0; /* Remove default margin */
+}
+
+.navigation a {
+  color: #ffffff; /* White text for links */
+  text-decoration: none; /* Remove underline */
+  font-weight: 500; /* Medium font weight */
+}
+
+.navigation a:hover {
+  text-decoration: underline; /* Underline on hover */
+}
+
+/* src/css/About.css */
+
+.about {
+  max-width: 800px; /* Maximum width for the content */
+  margin: 2rem auto; /* Center the content with margin */
+  padding: 1.5rem; /* Add padding around the content */
+  background-color: #ffffff; /* White background */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
+  color: #333; /* Dark text color */
+}
+
+h1 {
+  color: #08abcf; /* Color for the main heading */
+}
+
+h2 {
+  margin-top: 1.5rem; /* Space above the subheadings */
+}
