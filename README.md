@@ -11,7 +11,7 @@ The **Boarding Accommodation App (BODO_APP)** connects users with affordable boa
 ## Tech Stack
 - **Frontend**: React, HTML, CSS
 - **Backend**: Node.js, Express (optional, if applicable)
-- **Database**: MongoDB or Firebase (or specify if another DB is used)
+- **Database**: Mysql (or specify if another DB is used)
 
 ## Getting Started
 
