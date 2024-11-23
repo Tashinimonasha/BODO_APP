@@ -1,0 +1,76 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 40px;
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.logo img {
+  height: 1px;
+}
+
+.logo span {
+  font-size: 24px;
+  font-weight: bold;
+  margin-left: 10px;
+  color: #08abcf;
+}
+
+.nav-links {
+  display: flex;
+  list-style: none;
+}
+
+.nav-links li {
+  margin: 0 15px;
+  position: relative;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 100%;
+  background-color: white;
+  min-width: 150px;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.auth-buttons button {
+  background-color: #08abcf;
+  color: #fff;
+  border: none;
+  margin-left: 10px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.auth-buttons .login {
+  background-color: #333;
+}
+
+.auth-buttons .register {
+  background-color: #333;
+}
+
+.auth-buttons .post-ad {
+  background-color: #f39c12;
+}
+
+.auth-buttons button:hover {
+  opacity: 0.9;
+}

@@ -1,6 +1,7 @@
 // About.js
 import React from 'react';
 import './App.css';
+ 
 
 function About() {
     return (
@@ -17,8 +18,11 @@ function About() {
             <p>
             At BODO App, our team is a dedicated group of developers, designers, and problem-solvers who are passionate about making the search for boarding accommodations easier and more accessible. Led by visionary project members and guided by industry experts, we bring together diverse skills in software engineering, user experience design, and data analysis to build a platform that truly meets users' needs. Each team member shares a commitment to excellence, innovation, and community engagement, working tirelessly to create a secure, user-friendly, and reliable experience for all. Together, we are shaping a better, more connected future for finding temporary housing solutions.
             </p>
+                
         </div>
+      
     );
+   
 }
 
 export default About;

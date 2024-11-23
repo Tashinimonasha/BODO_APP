@@ -1,13 +1,32 @@
-// Home.js
 import React from 'react';
+import './home.css'; // Link to global CSS
+import 'bootstrap/dist/css/bootstrap.min.css'; // Bootstrap for basic styling
 
-function Home() {
-    return (
-        <div className="home">
-            <h1>Welcome to BODO APP</h1>
-            <p> Discover a world of convenience with BODO App, your trusted companion in finding the perfect boarding accommodation! Whether you’re a student, professional, or traveler, BODO App simplifies your search for temporary housing with detailed listings, secure bookings, and real-time availability updates. Explore options that match your preferences, from budget-friendly to premium amenities, all in one place. Start your journey today, and let BODO App guide you to a comfortable, reliable, and hassle-free stay!</p>
+// Import the image
+import image1 from './image1.png';
+
+const Home = () => {
+  return (
+    <div className="home-page">
+      {/* Hero Section */}
+      <div className="hero-section">
+        <img src={image1} alt="Welcome" className="hero-image" />
+        <div className="hero-overlay">
+          <h1 className="hero-title">Find Your Perfect Accommodation</h1>
+          <p className="hero-subtitle">Rooms, Annexes, Hostels, Apartments & More</p>
+          <button className="explore-button">Explore Now</button>
         </div>
-    );
-}
+      </div>
+
+      {/* About Section */}
+      <div className="about-section container mt-5">
+        <h2 className="text-center text-dark mb-4">About BODO APP</h2>
+        <p className="text-center">
+          BODO APP is your ultimate solution for finding nearby boarding facilities tailored to your needs. Whether it's a cozy annex, a spacious apartment, or a convenient hostel, we've got you covered. Our platform connects property owners and seekers, ensuring a seamless experience for everyone.
+        </p>
+      </div>
+    </div>
+  );
+};
 
 export default Home;
