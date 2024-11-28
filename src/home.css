@@ -16,7 +16,7 @@ body {
   
   .hero-image {
     width: 100%;
-    height: 100%;
+    height: 150%;
     object-fit: cover;
   }
   
@@ -44,6 +44,7 @@ body {
   
   .explore-button {
     padding: 10px 20px;
+    margin-top: 450px;
     background-color: #08abcf;
     border: none;
     color: white;

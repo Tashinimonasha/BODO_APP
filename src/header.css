@@ -5,10 +5,13 @@
   padding: 20px 40px;
   background-color: #fff;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  height: 50px;
+  nav-left: full;
 }
 
 .logo img {
-  height: 1px;
+  height: 0.8px;
 }
 
 .logo span {
@@ -21,6 +24,7 @@
 .nav-links {
   display: flex;
   list-style: none;
+  width:100%;
 }
 
 .nav-links li {
@@ -48,29 +52,47 @@
   display: block;
 }
 
+/* Authentication buttons container */
+.auth-buttons {
+  display: flex;
+  gap: 15px; /* Space between the buttons */
+  align-items: center; /* Vertically align buttons */
+  border-bottom: 2px solid #ddd; /* Add a horizontal line under the buttons */
+  padding-bottom: 10px; /* Ensure padding for spacing from buttons */
+}
+
+/* Individual button styling */
 .auth-buttons button {
-  background-color: #08abcf;
-  color: #fff;
-  border: none;
-  margin-left: 10px;
   padding: 10px 20px;
+  font-size: 16px;
   cursor: pointer;
-  font-weight: bold;
+  border: none;
+  border-radius: 5px;
   transition: background-color 0.3s ease;
 }
 
 .auth-buttons .login {
   background-color: #333;
+  color: white;
 }
 
 .auth-buttons .register {
   background-color: #333;
+  color: white;
 }
 
+ 
 .auth-buttons .post-ad {
-  background-color: #f39c12;
+  background-color: #e79913;
+  color: white;
+  padding: 4px 8px; /* Reduce padding for a smaller button */
+  font-size: 15px; /* Smaller font size */
+  border-radius: 4px; /* Slightly rounded edges */
+  margin-top: 3px;
+  cursor: pointer;
+  transition: background-color 0.3s ease; /* Smooth hover effect */
 }
 
-.auth-buttons button:hover {
-  opacity: 0.9;
+.auth-buttons .post-ad:hover {
+  background-color: #d38f0d; /* Slightly darker yellow on hover */
 }

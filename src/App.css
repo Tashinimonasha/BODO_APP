@@ -53,42 +53,7 @@ h1 {
   margin: 0;
 }
 
-.navigation ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: flex-start; /* Aligns the items to the left */
-}
-
-.navigation li {
-  margin: 0 20px;
-}
-
-.navigation a {
-  text-decoration: none;
-  color: #000000;
-  font-weight: bold;
-  font-size: 1rem;
-}
-
-.navigation a:hover {
-  color: #08abcf;
-}
-
-.navigation .login-button {
-  font-size: 1.2rem;
-  padding: 10px 20px;
-  border: none;
-  background-color: #08abcf;
-  color: white;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.navigation .login-button:hover {
-  background-color: #006f8e;
-}
+ 
 
 /* src/css/About.css */
 .about {

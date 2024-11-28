@@ -3,7 +3,7 @@ import './home.css'; // Link to global CSS
 import 'bootstrap/dist/css/bootstrap.min.css'; // Bootstrap for basic styling
 
 // Import the image
-import image1 from './image1.png';
+import image1 from './image1.gif';
 
 const Home = () => {
   return (
@@ -12,9 +12,8 @@ const Home = () => {
       <div className="hero-section">
         <img src={image1} alt="Welcome" className="hero-image" />
         <div className="hero-overlay">
-          <h1 className="hero-title">Find Your Perfect Accommodation</h1>
-          <p className="hero-subtitle">Rooms, Annexes, Hostels, Apartments & More</p>
-          <button className="explore-button">Explore Now</button>
+           
+         <button className="explore-button">Explore Now</button>
         </div>
       </div>
 

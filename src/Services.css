@@ -1,41 +1,36 @@
-/* Services Section Styling */
-.services-section {
-    background: linear-gradient(120deg, #1e3c72, #2a5298);
-    color: #ecf0f1;
-}
-
-.services-section h1 {
-    color: #f39c12;
-    font-weight: bold;
-    letter-spacing: 1.5px;
-}
-
-.service-card {
-    border: none;
+.services-page {
+    background: linear-gradient(to bottom right, #f5f7fa, #e2e6ea);
+    min-height: 100vh;
+    padding: 20px 0;
+  }
+  
+  .service-card {
+    background: #ffffff;
     border-radius: 10px;
-    background-color: #34495e;
-    color: #ecf0f1;
-    transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.service-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-}
-
-.service-icon {
-    font-size: 3rem;
-    color: #f1c40f;
-    margin-bottom: 15px;
-}
-
-.card-title {
-    font-size: 1.3rem;
-    font-weight: bold;
-    color: #f39c12;
-}
-
-.card-text {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+    padding: 20px;
+  }
+  
+  .service-title {
+    font-size: 1.5rem;
+    color: #005f73;
+    margin-bottom: 10px;
+  }
+  
+  .service-description {
     font-size: 1rem;
-    line-height: 1.6;
-}
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .google-sheets-embed {
+    border: none;
+    border-radius: 8px;
+  }
+  
+  button {
+    border-radius: 5px;
+    font-size: 1rem;
+  }
+  
