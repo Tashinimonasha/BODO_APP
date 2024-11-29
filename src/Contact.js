@@ -1,80 +1,73 @@
-// Contact.js
-import React, { useState } from 'react';
-import './App.css'; // Import your custom CSS
-import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
+// ContactPage.js
+import React from "react";
+import "./Contact.css";
 
-const Contact = () => {
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        message: '',
-    });
-
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // Logic to handle form submission (e.g., send data to API)
-        console.log('Form submitted:', formData);
-    };
-
-    return (
-        <div className="contact-page container mt-5">
-            <h1 className="text-center text-light mb-4">Contact Us</h1>
-            <form onSubmit={handleSubmit} className="form-group">
-                <div className="mb-3">
-                    <label htmlFor="name" className="form-label">Name</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        id="name"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="email" className="form-label">Email</label>
-                    <input
-                        type="email"
-                        className="form-control"
-                        id="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="message" className="form-label">Message</label>
-                    <textarea
-                        className="form-control"
-                        id="message"
-                        name="message"
-                        rows="5"
-                        value={formData.message}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <button type="submit" className="btn btn-primary">Submit</button>
-            </form>
-
-            <div className="contact-info text-center text-light mt-5">
-                <p>Email: info@example.com</p>
-                <p>Phone: +123 456 7890</p>
-                <p>Follow us on social media:</p>
-                <div>
-                    <a href="https://facebook.com" className="text-light me-3">Facebook</a>
-                    <a href="https://instagram.com" className="text-light me-3">Instagram</a>
-                    <a href="https://github.com" className="text-light">GitHub</a>
-                </div>
-            </div>
+const ContactPage = () => {
+  return (
+    <div className="contact-page">
+      <div className="contact-left">
+        <h2>Get in touch with us</h2>
+        <p>
+          We are a BPO Company based in Australia and Sri Lanka. We provide business process outsourcing services to Australian companies and overseas.
+        </p>
+        <div className="branch">
+          <h3>🇦🇺 AUSTRALIAN BRANCH</h3>
+          <p>
+            <strong>Address:</strong> 574 Plummers St Port Melbourne VIC 3207
+          </p>
+          <p>
+            <strong>Call Us:</strong> +61 370 190 439
+          </p>
         </div>
-    );
+        <div className="branch">
+          <h3>🇱🇰 SRI LANKAN BRANCH</h3>
+          <p>
+            <strong>Address:</strong> 12A/005, Church Road, Liyanagemulla
+          </p>
+          <p>
+            <strong>Call Us:</strong> +94 112 258 528
+          </p>
+        </div>
+        <div className="social-media">
+          <h3>Follow us:</h3>
+          <div className="icons">
+            <a href="#"><i className="fab fa-facebook"></i></a>
+            <a href="#"><i className="fab fa-instagram"></i></a>
+            <a href="#"><i className="fab fa-linkedin"></i></a>
+            <a href="#"><i className="fab fa-github"></i></a>
+            <a href="#"><i className="fab fa-twitter"></i></a>
+          </div>
+        </div>
+      </div>
+      <div className="contact-right">
+        <h2>Get in touch with us</h2>
+        <p>We’re here to assist you with any inquiries or support you may need. Reach out to us via email or call us.</p>
+        <form>
+          <label>
+            Your Name
+            <input type="text" placeholder="Enter Your Name" />
+          </label>
+          <label>
+            Your Email
+            <input type="email" placeholder="Enter Your Email" />
+          </label>
+          <label>
+            Topic
+            <select>
+              <option>Web Design Project</option>
+              <option>Development Inquiry</option>
+              <option>General Inquiry</option>
+            </select>
+          </label>
+          <label>
+            Message
+            <textarea placeholder="Enter your Message here"></textarea>
+          </label>
+          <button type="submit">Send Message</button>
+        </form>
+      </div>
+    </div>
+  );
 };
 
-export default Contact;
+export default ContactPage;

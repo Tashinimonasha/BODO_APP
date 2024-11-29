@@ -21,7 +21,9 @@ const Header = () => {
           <li><a href="/annex">Annex</a></li>
           <li><a href="/hostel">Hostel</a></li>
           <li><a href="/apartments">Apartments</a></li>
+          
           <li className="dropdown">
+             <a href="/Contact">Contact</a>
             <a href="/services">Our Services</a>
              
           </li>

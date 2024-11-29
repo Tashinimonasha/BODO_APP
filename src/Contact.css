@@ -1,0 +1,84 @@
+/* ContactPage.css */
+.contact-page {
+    display: flex;
+    justify-content: space-between;
+    padding: 2rem;
+    background-color: #f9f7f4;
+    font-family: Arial, sans-serif;
+  }
+  
+  .contact-left, .contact-right {
+    width: 45%;
+  }
+  
+  .contact-left h2, .contact-right h2 {
+    color: #000;
+    margin-bottom: 1rem;
+  }
+  
+  .contact-left p, .contact-right p {
+    color: #555;
+    margin-bottom: 1.5rem;
+  }
+  
+  .branch {
+    margin-bottom: 1.5rem;
+  }
+  
+  .branch h3 {
+    color: #007bff;
+    margin-bottom: 0.5rem;
+  }
+  
+  .branch p {
+    margin: 0.2rem 0;
+  }
+  
+  .social-media h3 {
+    margin-bottom: 0.5rem;
+  }
+  
+  .icons a {
+    margin-right: 1rem;
+    font-size: 1.5rem;
+    color: #007bff;
+    text-decoration: none;
+  }
+  
+  .icons a:hover {
+    color: #0056b3;
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  form label {
+    font-size: 1rem;
+    color: #333;
+  }
+  
+  form input, form select, form textarea {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+  }
+  
+  form button {
+    padding: 0.8rem;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  
+  form button:hover {
+    background-color: #0056b3;
+  }
+  
