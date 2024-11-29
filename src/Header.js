@@ -23,9 +23,8 @@ const Header = () => {
           <li><a href="/apartments">Apartments</a></li>
           
           <li className="dropdown">
-             <a href="/Contact">Contact</a>
-            <a href="/services">Our Services</a>
-             
+            <a style={{ paddingRight: '30px' }} href="/Contact">Contact</a>
+            <a href="/services">Our Services</a>   
           </li>
         </ul>
       </nav>

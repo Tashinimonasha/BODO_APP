@@ -31,7 +31,7 @@ const PostAdFree = () => {
   return (
     <div className="post-ad-page container">
       <div className="row justify-content-center">
-        {/* Left Section */}
+        {/* Left Section with Image */}
         <div className="col-lg-6 d-none d-lg-block">
           <h1 className="display-4 text-primary">Post Your Ad for Free</h1>
           <p className="lead">
@@ -39,7 +39,7 @@ const PostAdFree = () => {
             product with photos, a detailed description, and pricing.
           </p>
           <img
-            src="https://via.placeholder.com/500x300"
+            src="/image1.jpg"  // Update with correct image path
             alt="Post Ad"
             className="img-fluid"
           />
@@ -50,10 +50,9 @@ const PostAdFree = () => {
           <div className="form-container shadow p-4 bg-light rounded">
             <h3 className="mb-4 text-center text-primary">Post Your Ad</h3>
             <form onSubmit={handleSubmit}>
+              {/* Title Input */}
               <div className="form-group mb-3">
-                <label htmlFor="title" className="form-label">
-                  Title
-                </label>
+                <label htmlFor="title" className="form-label">Title</label>
                 <input
                   type="text"
                   id="title"
@@ -66,10 +65,9 @@ const PostAdFree = () => {
                 />
               </div>
 
+              {/* Category Input */}
               <div className="form-group mb-3">
-                <label htmlFor="category" className="form-label">
-                  Category
-                </label>
+                <label htmlFor="category" className="form-label">Category</label>
                 <select
                   id="category"
                   name="category"
@@ -78,9 +76,7 @@ const PostAdFree = () => {
                   onChange={handleChange}
                   required
                 >
-                  <option value="" disabled>
-                    Select Category
-                  </option>
+                  <option value="" disabled>Select Category</option>
                   <option value="electronics">Electronics</option>
                   <option value="real-estate">Real Estate</option>
                   <option value="vehicles">Vehicles</option>
@@ -89,10 +85,9 @@ const PostAdFree = () => {
                 </select>
               </div>
 
+              {/* Description Input */}
               <div className="form-group mb-3">
-                <label htmlFor="description" className="form-label">
-                  Description
-                </label>
+                <label htmlFor="description" className="form-label">Description</label>
                 <textarea
                   id="description"
                   name="description"
@@ -105,10 +100,9 @@ const PostAdFree = () => {
                 ></textarea>
               </div>
 
+              {/* Price Input */}
               <div className="form-group mb-3">
-                <label htmlFor="price" className="form-label">
-                  Price (Optional)
-                </label>
+                <label htmlFor="price" className="form-label">Price (Optional)</label>
                 <input
                   type="number"
                   id="price"
@@ -120,10 +114,9 @@ const PostAdFree = () => {
                 />
               </div>
 
+              {/* Contact Information */}
               <div className="form-group mb-3">
-                <label htmlFor="contact" className="form-label">
-                  Contact Information
-                </label>
+                <label htmlFor="contact" className="form-label">Contact Information</label>
                 <input
                   type="text"
                   id="contact"
@@ -136,10 +129,9 @@ const PostAdFree = () => {
                 />
               </div>
 
+              {/* Image Upload */}
               <div className="form-group mb-4">
-                <label htmlFor="images" className="form-label">
-                  Upload Images
-                </label>
+                <label htmlFor="images" className="form-label">Upload Images</label>
                 <input
                   type="file"
                   id="images"
@@ -151,6 +143,7 @@ const PostAdFree = () => {
                 />
               </div>
 
+              {/* Submit Button */}
               <button
                 type="submit"
                 className="btn btn-primary w-100 py-2 text-uppercase"

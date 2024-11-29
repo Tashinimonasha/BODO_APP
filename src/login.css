@@ -1,10 +1,11 @@
 /* Login Page Background */
 .login-page {
     height: 100vh;
-    background-color: #93dae7; /* Light pink background */
+    background-color: #ebeff3; /* Light pink background */
     display: flex;
     justify-content: center;
     align-items: center;
+    
   }
   
   /* Login Container Styling */

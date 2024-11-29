@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './login.css'; // Link to global CSS
+import './login.css'; // Make sure this file exists and is linked correctly
 import 'bootstrap/dist/css/bootstrap.min.css'; // Bootstrap for basic styling
 
 const Login = () => {
@@ -8,9 +8,16 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false); // State for toggling password visibility
 
   const handleLogin = (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent default form submission behavior
+    console.log('Login button clicked!');
     console.log('Login Details:', { email, password });
-    // Add your authentication logic here
+    
+    // Add authentication logic here (API call or validation)
+    if (email && password) {
+      alert('Login successful!');
+    } else {
+      alert('Please enter valid credentials!');
+    }
   };
 
   return (
@@ -18,6 +25,7 @@ const Login = () => {
       <div className="login-container">
         <h2 className="text-center mb-4 highlight-text">Welcome Back, Please Sign In to Your Account</h2>
         <form onSubmit={handleLogin}>
+          {/* Email Input */}
           <div className="form-group mb-3">
             <label htmlFor="email" className="form-label">Email Address</label>
             <input
@@ -30,6 +38,8 @@ const Login = () => {
               placeholder="Enter your email"
             />
           </div>
+
+          {/* Password Input */}
           <div className="form-group mb-4 position-relative">
             <label htmlFor="password" className="form-label">Password</label>
             <input
@@ -41,17 +51,28 @@ const Login = () => {
               required
               placeholder="Enter your password"
             />
+            {/* Eye Icon to toggle password visibility */}
             <i 
               className={`eye-icon ${showPassword ? 'show' : ''}`} 
               onClick={() => setShowPassword(!showPassword)}
-            >👁️</i> {/* Eye icon for toggling password visibility */}
+            >
+              👁️
+            </i>
           </div>
+
           <button type="submit" className="btn btn-yellow w-100">Login</button>
         </form>
 
         <div className="social-login text-center mt-4">
-          <button className="btn btn-facebook w-100 mb-2">Login with Facebook</button>
-          <button className="btn btn-google w-100">Login with Google</button>
+          {/* Facebook Login Button */}
+          <button className="btn btn-facebook w-100 mb-2">
+            <i className="fab fa-facebook-f"></i> Login with Facebook
+          </button>
+
+          {/* Google Login Button */}
+          <button className="btn btn-google w-100">
+            <i className="fab fa-google"></i> Login with Google
+          </button>
         </div>
 
         <p className="text-center mt-3">
