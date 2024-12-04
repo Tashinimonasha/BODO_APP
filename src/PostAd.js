@@ -18,15 +18,46 @@ const PostAdFree = () => {
   };
 
   const handleFileChange = (e) => {
-    setImages([...e.target.files]);
-  };
+    const selectedFiles = Array.from(e.target.files); // Get all selected files
+    setImages(selectedFiles);}
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Form Data Submitted:", formData);
     console.log("Uploaded Images:", images);
-    // Add your backend API integration here
+  
+    // Create a FormData object to send data including images
+    const formDataToSend = new FormData();
+    formDataToSend.append("title", formData.title);
+    formDataToSend.append("category", formData.category);
+    formDataToSend.append("description", formData.description);
+    formDataToSend.append("price", formData.price);
+    formDataToSend.append("contact", formData.contact);
+  
+    // Append images to FormData
+    images.forEach((image) => {
+      formDataToSend.append("images", image);
+    });
+  
+    // API URL (adjust this to your API endpoint)
+    const apiUrl = "http://localhost:5000/api/boarding/add"; 
+  
+    // Make a POST request with FormData
+    fetch(apiUrl, {
+      method: "POST",
+      body: formDataToSend,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Response from API:", data);
+        // Handle the response (e.g., show success message)
+      })
+      .catch((error) => {
+        console.error("Error posting ad:", error);
+        // Handle error (e.g., show error message)
+      });
   };
+  
 
   return (
     <div className="post-ad-page container">
@@ -142,6 +173,7 @@ const PostAdFree = () => {
                   multiple
                 />
               </div>
+              
 
               {/* Submit Button */}
               <button

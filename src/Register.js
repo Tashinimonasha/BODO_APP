@@ -26,29 +26,50 @@ const Register = () => {
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const { name, email, password, confirmPassword } = formData;
-
+  
     // Simple form validation
     if (!name || !email || !password || !confirmPassword) {
       setError("All fields are required.");
       return;
     }
-
+  
     if (password !== confirmPassword) {
       setError("Passwords do not match.");
       return;
     }
-
-    // Proceed with registration (e.g., make API call to backend)
-    // After successful registration, navigate to the login page or another page
-    setError(""); // Clear error
-    console.log("Form data submitted:", formData);
-
-    // Navigate to the login page or dashboard after registration
-    navigate("/login");
+  
+    try {
+      // API call to the backend
+      const response = await fetch("http://localhost:5000/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firstName: name,
+          email: email,
+          password: password,
+        }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        console.log("Registration successful:", data);
+        // Redirect user after successful registration
+        navigate("/login");
+      } else {
+        setError(data.message || "Registration failed.");
+      }
+    } catch (err) {
+      console.error("Error:", err);
+      setError("An error occurred during registration.");
+    }
   };
+  
 
   return (
     <div className="register-page">

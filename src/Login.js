@@ -1,24 +1,45 @@
 import React, { useState } from 'react';
 import './login.css'; // Make sure this file exists and is linked correctly
+import { useNavigate } from "react-router-dom"; // For navigation after successful registration
 import 'bootstrap/dist/css/bootstrap.min.css'; // Bootstrap for basic styling
 
 const Login = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false); // State for toggling password visibility
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault(); // Prevent default form submission behavior
-    console.log('Login button clicked!');
-    console.log('Login Details:', { email, password });
-    
-    // Add authentication logic here (API call or validation)
-    if (email && password) {
-      alert('Login successful!');
-    } else {
-      alert('Please enter valid credentials!');
+  
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Login Successful:', data);
+        
+        // Save token to localStorage (optional)
+        localStorage.setItem('token', data.token);
+        navigate("/index");
+       // alert('Login successful!');
+        // Redirect or perform further actions
+      } else {
+        const errorData = await response.json();
+        alert(`Login failed: ${errorData.message}`);
+      }
+    } catch (error) {
+      console.error('Error during login:', error);
+      alert('An error occurred. Please try again later.');
     }
   };
+  
 
   return (
     <div className="login-page d-flex justify-content-center align-items-center">
@@ -56,7 +77,7 @@ const Login = () => {
               className={`eye-icon ${showPassword ? 'show' : ''}`} 
               onClick={() => setShowPassword(!showPassword)}
             >
-              👁️
+            
             </i>
           </div>
 
