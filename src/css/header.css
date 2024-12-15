@@ -7,8 +7,9 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   width: 90%;
   height: 80px;
-  nav-left: full;
+  margin-top: -20px; /* Move header upwards */
 }
+
 
 .logo img {
   height: 0.8px;
@@ -96,3 +97,5 @@
 .auth-buttons .post-ad:hover {
   background-color: #d38f0d; /* Slightly darker yellow on hover */
 }
+
+

@@ -1,5 +1,5 @@
 import React from "react";
-import "./Services.css"; // Link your custom CSS file
+import "./css/Services.css"; // Link your custom CSS file
 import "bootstrap/dist/css/bootstrap.min.css"; // Use Bootstrap for styling
 
 const Services = () => {
@@ -39,21 +39,7 @@ const Services = () => {
         </div>
       </div>
 
-      {/* Google Sheets Integration */}
-      <div className="container my-5">
-        <h2 className="text-center">Manage Boarding Data</h2>
-        <iframe
-          title="Google Sheets"
-          src="https://docs.google.com/spreadsheets/d/your-sheet-id/edit?usp=sharing"
-          width="100%"
-          height="400"
-          className="google-sheets-embed"
-        ></iframe>
-        <p className="text-center mt-3">
-          Use the above sheet to manage and view all your boarding-related data. 
-          You can edit and share it with ease.
-        </p>
-      </div>
+      
     </div>
   );
 };

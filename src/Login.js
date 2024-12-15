@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './login.css'; // Make sure this file exists and is linked correctly
+import './css/login.css'; // Make sure this file exists and is linked correctly
 import { useNavigate } from "react-router-dom"; // For navigation after successful registration
 import 'bootstrap/dist/css/bootstrap.min.css'; // Bootstrap for basic styling
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
-import "./header.css"; // Link to CSS for styling
-import image1 from './logo.png';
+import "./css/header.css"; // Link to CSS for styling
+import image1 from './assets/logo.png';
 
 const Header = () => {
   const navigate = useNavigate(); // Initialize useNavigate hook
@@ -17,10 +17,8 @@ const Header = () => {
       <nav>
         <ul className="nav-links">
           <li><a href="/">Home</a></li>
-          <li><a href="/rooms">Rooms</a></li>
-          <li><a href="/annex">Annex</a></li>
-          <li><a href="/hostel">Hostel</a></li>
-          <li><a href="/apartments">Apartments</a></li>
+          <li><a href="/rooms">About</a></li>
+          <li><a href="/rooms">Boarding</a></li>
           
           <li className="dropdown">
             <a style={{ paddingRight: '30px' }} href="/Contact">Contact</a>

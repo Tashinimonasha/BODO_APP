@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./postAd.css"; // Add custom styles here
+import "./css/postAd.css"; // Add custom styles here
 import "bootstrap/dist/css/bootstrap.min.css"; // Use Bootstrap for quick styling
 
 const PostAdFree = () => {
@@ -7,7 +7,7 @@ const PostAdFree = () => {
     title: "",
     category: "",
     description: "",
-    price: "",
+    monthlyrent: "",
     contact: "",
   });
 
@@ -69,11 +69,8 @@ const PostAdFree = () => {
             Reach thousands of users by posting your ad for free. Showcase your
             product with photos, a detailed description, and pricing.
           </p>
-          <img
-            src="/image1.jpg"  // Update with correct image path
-            alt="Post Ad"
-            className="img-fluid"
-          />
+      
+
         </div>
 
         {/* Form Section */}
@@ -107,12 +104,12 @@ const PostAdFree = () => {
                   onChange={handleChange}
                   required
                 >
-                  <option value="" disabled>Select Category</option>
-                  <option value="electronics">Electronics</option>
-                  <option value="real-estate">Real Estate</option>
-                  <option value="vehicles">Vehicles</option>
-                  <option value="services">Services</option>
-                  <option value="others">Others</option>
+                  <option value="" disabled>Type</option>
+                  <option value="student">Student</option>
+                  <option value="professional">Professional</option>
+                  <option value="mixed">Mixed</option>
+                  <option value="family">Family</option>
+                  
                 </select>
               </div>
 
@@ -133,7 +130,7 @@ const PostAdFree = () => {
 
               {/* Price Input */}
               <div className="form-group mb-3">
-                <label htmlFor="price" className="form-label">Price (Optional)</label>
+                <label htmlFor="price" className="form-label">Monthly Rent</label>
                 <input
                   type="number"
                   id="price"
@@ -159,6 +156,22 @@ const PostAdFree = () => {
                   required
                 />
               </div>
+
+               {/* Location Input */}
+<div className="form-group mb-4">
+  <label htmlFor="location" className="form-label">Location</label>
+  <input
+    type="text"
+    id="location"
+    name="location"
+    className="form-control"
+    placeholder="Your address or location"
+    value={formData.location} // Use formData.location
+    onChange={handleChange}
+    required
+  />
+</div>
+                      
 
               {/* Image Upload */}
               <div className="form-group mb-4">

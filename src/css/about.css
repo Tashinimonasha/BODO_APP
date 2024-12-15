@@ -1,0 +1,48 @@
+.about-page {
+    background-color: #f8f9fa; /* Light background for readability */
+    padding: 20px;
+  }
+  
+  .about-header {
+    background-color: #08abcf; /* Light blue header */
+    padding: 40px 20px;
+    color: #fff;
+  }
+  
+  .about-header h1 {
+    font-size: 36px;
+    text-align: center;
+    margin: 0;
+  }
+  
+  .about-content,
+  .team-section {
+    color: #333; /* Dark text for contrast */
+    line-height: 1.6;
+  }
+  
+  .about-content h2,
+  .team-section h2 {
+    color: #08abcf; /* Highlighted heading color */
+    font-weight: bold;
+    letter-spacing: 1px;
+  }
+  
+  .about-list {
+    list-style-type: disc;
+    margin: 20px 40px;
+    padding-left: 20px;
+  }
+  
+  .about-list li {
+    margin-bottom: 10px;
+  }
+  
+  .team-section {
+    margin-top: 40px;
+  }
+  
+  .team-section p {
+    text-align: center;
+  }
+  
