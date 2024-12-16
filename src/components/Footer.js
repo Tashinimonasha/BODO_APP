@@ -3,68 +3,35 @@ import logo from "../assets/footer/logo1.png";
 
 const Footer = () => {
   return (
-      <footer className="bg-blue-950 text-white py-8">
-        <div className="container mx-auto px-4">
-
-          {/* Grid layout for the three columns */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
-
-            {/* About Section */}
+      <footer className="bg-blue-950 text-white py-10">
+        <div className="container mx-auto px-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 text-center md:text-left">
             <div className="flex flex-col items-center md:items-start">
               <div className="flex items-center space-x-4">
-                <img
-                    src={logo}
-                    alt="BODOAPP Logo"
-                    className="w-20 h-20"
-                />
+                <img src={logo} alt="BODOAPP Logo" className="w-20 h-20" />
                 <div>
-                  <h3 className="text-lg font-bold mb-2">About BODOAPP</h3>
+                  <h3 className="text-xl font-semibold mb-3">About BODOAPP</h3>
                   <p className="text-sm leading-6">
-                    BODOAPP helps students and workers find the best boarding
-                    places quickly and efficiently.
-                    Your comfort is our priority.
+                    BODOAPP makes it easy for students and workers to find nearby boarding accommodations with comfort and convenience. Your satisfaction is our mission.
                   </p>
                 </div>
               </div>
             </div>
-
-            {/* Quick Links Section */}
             <div className="flex flex-col items-center">
-              <h3 className="text-lg font-bold mb-2">Quick Links</h3>
-              <ul className="space-y-2">
-                <li>
-                  <a href="/home" className="hover:text-blue-300 transition-colors">
-                    Home
-                  </a>
-                </li>
-                <li>
-                  <a href="/about" className="hover:text-blue-300 transition-colors">
-                    About Us
-                  </a>
-                </li>
-                <li>
-                  <a href="/contact" className="hover:text-blue-300 transition-colors">
-                    Contact
-                  </a>
-                </li>
-                <li>
-                  <a href="/faq" className="hover:text-blue-300 transition-colors">
-                    FAQ
-                  </a>
-                </li>
+              <h3 className="text-xl font-semibold mb-3">Quick Links</h3>
+              <ul className="space-y-3">
+                <li><a href="/home" className="hover:text-blue-300">Home</a></li>
+                <li><a href="/about" className="hover:text-blue-300">About Us</a></li>
+                <li><a href="/services" className="hover:text-blue-300">Services</a></li>
+                <li><a href="/contact" className="hover:text-blue-300">Contact</a></li>
+                <li><a href="/faq" className="hover:text-blue-300">FAQ</a></li>
               </ul>
             </div>
-
-            {/* Contact Section */}
             <div className="flex flex-col items-center md:items-start">
-              <h3 className="text-lg font-bold mb-2">Contact Us</h3>
-              <p>
-                Email: <a href="mailto:info@bodoapp.com" className="hover:underline">info@bodoapp.com</a>
-              </p>
-              <p>
-                Phone: <a href="tel:+94 723 000 823" className="hover:underline">+94 723 000 823</a>
-              </p>
-              <div className="flex justify-center md:justify-start space-x-4 mt-4">
+              <h3 className="text-xl font-semibold mb-3">Contact Us</h3>
+              <p className="mb-2">Email: <a href="mailto:info@bodoapp.com" className="hover:underline">info@bodoapp.com</a></p>
+              <p className="mb-2">Phone: <a href="tel:+94723000823" className="hover:underline">+94 723 000 823</a></p>
+              <div className="flex space-x-6 mt-4">
                 <a href="https://facebook.com" target="_blank" rel="noreferrer">
                   <img src="https://img.icons8.com/ios-filled/30/ffffff/facebook.png" alt="Facebook" />
                 </a>
@@ -74,13 +41,15 @@ const Footer = () => {
                 <a href="https://instagram.com" target="_blank" rel="noreferrer">
                   <img src="https://img.icons8.com/ios-filled/30/ffffff/instagram-new.png" alt="Instagram" />
                 </a>
+                <a href="https://linkedin.com" target="_blank" rel="noreferrer">
+                  <img src="https://img.icons8.com/ios-filled/30/ffffff/linkedin.png" alt="LinkedIn" />
+                </a>
               </div>
             </div>
           </div>
-
-          {/* Footer Bottom */}
-          <div className="mt-6 border-t border-blue-700 pt-4 text-center">
+          <div className="mt-10 border-t border-blue-700 pt-4 text-center">
             <p>&copy; {new Date().getFullYear()} BODOAPP. All Rights Reserved.</p>
+            <p>Designed with ❤ by the BODOAPP Team</p>
           </div>
         </div>
       </footer>

@@ -145,15 +145,7 @@ const Login = () => {
                 backgroundPosition: "center",
               }}
           >
-            <div className="bg-white p-4 rounded-full shadow-lg">
-            <span
-                role="img"
-                aria-label="sparkle"
-                className="text-yellow-500 text-4xl"
-            >
-              ✨
-            </span>
-            </div>
+
           </div>
         </div>
       </div>
