@@ -1,36 +1,27 @@
-// App.js
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Header from './Header';
-import Home from './Home'; // Home component (could be a main or landing page)
-import About from './About';
- import Contact from './Contact';
-import Services from './Services';
-import Login from "./Login";
-import Register from "./Register";
-import PostAd from "./PostAd";
-import Footer from './Footer'; // Import the Footer component
-import './css/App.css';
+import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Header from "./components/Heder";
+import Footer from "./components/Footer";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import AddListing from "./pages/AddListing";
 
 function App() {
   return (
     <Router>
-      <div className="App">
-        <Header />
+      <Header />
+      <main className="flex-1">
         <Routes>
-          <Route path="/" element={<Home />} />       {/* Home route */}
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} /> {/* Contact route */}
-          <Route path="/services" element={<Services />} /> {/* Services route */}
+          <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/post-ad" element={<PostAd />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/addListning" element={<AddListing />} />
         </Routes>
-        <Footer /> {/* Include the Footer component at the bottom */}
-      </div>
+      </main>
+      <Footer />
     </Router>
   );
 }
 
 export default App;
-
