@@ -9,6 +9,13 @@ import AddListing from "./pages/AddListing";
 import Boarding from "./pages/Boarding";
 import BoardingDetailsPage from "./pages/BoardingDetails";
 import About from "./pages/About";
+import Contact from "./pages/Contact";
+import OurServices from "./pages/Our Services";
+import ListingsPage from "./pages/MyAds";
+import SavedAds from "./pages/SavedAds";
+import ForgotPassword from "./pages/Forgotpassword";
+
+
 
 function App() {
   return (
@@ -18,11 +25,16 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/addListning" element={<AddListing />} />
-            <Route path="/boarding" element={<Boarding />} />
-            <Route path="/boarding/:boardingId" element={<BoardingDetailsPage />} />
-            <Route path="/about" element={<About />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/addListning" element={<AddListing />} />
+          <Route path="/boarding" element={<Boarding />} />
+          <Route path="/boarding/:boardingId" element={<BoardingDetailsPage />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/Contact" element={<Contact />} />
+          <Route path="/our-services" element={<OurServices />} />
+          <Route path="/my-ads" element={<ListingsPage />} />
+          <Route path="/saved-ads" element={<SavedAds />} />
         </Routes>
       </main>
       <Footer />

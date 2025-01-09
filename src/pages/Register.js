@@ -1,8 +1,11 @@
 import React, { useState } from "react";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import registerImage from "../assets/register/loginnew.jpg";
 import backgroundImage from "../assets/backgrounds/background.png";
 
 const Register = () => {
+    const [loading, setLoading] = useState(false); // Loading state
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -27,7 +30,6 @@ const Register = () => {
             isValid = false;
         }
 
-        // Validate email
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         if (!formData.email) {
             formErrors.email = "Email is required";
@@ -37,14 +39,27 @@ const Register = () => {
             isValid = false;
         }
 
-        // Validate password
-        if (!formData.password) {
-            formErrors.password = "Password is required";
-            isValid = false;
-        } else if (formData.password.length < 6) {
-            formErrors.password = "Password must be at least 6 characters";
-            isValid = false;
-        }
+     // Validate password
+    if (!formData.password) {
+        formErrors.password = "Password is required";
+        isValid = false;
+    } else if (formData.password.length < 6) {
+        formErrors.password = "Password must be at least 6 characters";
+        isValid = false;
+    } else if (!/(?=.*[A-Z])/.test(formData.password)) {
+        formErrors.password = "Password must contain at least one uppercase letter";
+        isValid = false;
+    } else if (!/(?=.*[a-z])/.test(formData.password)) {
+        formErrors.password = "Password must contain at least one lowercase letter";
+        isValid = false;
+    } else if (!/(?=.*\d)/.test(formData.password)) {
+        formErrors.password = "Password must contain at least one digit";
+        isValid = false;
+    } else if (!/(?=.*[@$!%*?&#])/.test(formData.password)) {
+        formErrors.password = "Password must contain at least one special character (@$!%*?&#)";
+        isValid = false;
+    }
+
 
         // Validate confirm password
         if (formData.confirmPassword !== formData.password) {
@@ -64,12 +79,61 @@ const Register = () => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (validateForm()) {
-            // Handle form submission logic here
-            console.log(formData);
+            try {
+                const response = await fetch('http://localhost:3000/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    toast.success('User registered successfully & Verification email sent !', {
+                        position: "top-right",
+                        autoClose: 3000,
+                        hideProgressBar: true,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
+
+                    setFormData({
+                        name: "",
+                        email: "",
+                        password: "",
+                        confirmPassword: "",
+                    });
+                } else {
+                    toast.error(result.message || 'Something went wrong', {
+                        position: "top-right",
+                        autoClose: 3000,
+                        hideProgressBar: true,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
+                }
+
+            } catch (error) {
+                toast.error('Failed to register user.', {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+            } finally {
+                setLoading(false);
+            }
         }
     };
 
@@ -77,11 +141,10 @@ const Register = () => {
         <div className="min-h-screen flex items-center justify-center bg-white"
              style={{
                  backgroundImage: `url(${backgroundImage})`,
-                 backgroundSize: 'cover', // Ensures the image covers the entire div
-                 backgroundPosition: 'center', // Centers the image
+                 backgroundSize: 'cover',
+                 backgroundPosition: 'center',
              }}>
             <div className="flex w-full max-w-6xl h-full max-h-screen bg-white rounded-lg shadow-lg overflow-hidden">
-                {/* Left Side */}
                 <div className="w-1/2 p-8">
                     <h1 className="text-3xl font-bold text-gray-800 mb-2">REGISTER</h1>
                     <p className="text-sm text-gray-600 mb-6">Create an account to get started!</p>
@@ -151,11 +214,13 @@ const Register = () => {
                             {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword}</p>}
                         </div>
 
+
                         <button
                             type="submit"
-                            className="w-full bg-blue-600 text-white font-semibold py-2 rounded-lg hover:bg-blue-950"
+                            disabled={loading} // Disable button when loading
+                            className={`w-full bg-blue-600 text-white font-semibold py-2 rounded-lg ${loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-950'}`}
                         >
-                            Register Now
+                            {loading ? 'Logging in...' : 'Register Now'}
                         </button>
 
                         <p className="text-center text-sm text-gray-600 mt-4">
@@ -171,7 +236,7 @@ const Register = () => {
                 <div
                     className="w-1/2 bg-purple-500 flex items-center justify-center p-8"
                     style={{
-                        backgroundImage: `url(${registerImage})`, // Use imported image here
+                        backgroundImage: `url(${registerImage})`,
                         backgroundSize: "cover",
                         backgroundPosition: "center",
                     }}
@@ -179,6 +244,7 @@ const Register = () => {
 
                 </div>
             </div>
+            <ToastContainer />
         </div>
     );
 };
