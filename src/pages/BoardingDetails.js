@@ -172,15 +172,20 @@ const BoardingDetailsPage = () => {
                 </div>
             </div>
 
-            {/* Boarding Details */}
-            <div className="mt-4 space-y-2">
-                <p className="text-lg">Description: {boardingDetails.description}</p>
-                <p className="text-lg">Location: {boardingDetails.location}</p>
-                <p className="text-lg">Price: LKR {boardingDetails.price}</p>
-                <p className="text-lg">District: {boardingDetails.district}</p>
-                <p className="text-lg">Type: {boardingDetails.type}</p>
-            </div>
-
+        {/* Boarding Details */}
+        <div className="mt-4 space-y-2">
+        <p className="text-lg">Description: <span className="text-blue-600 font-semibold">{boardingDetails.description}</span></p>
+         <p className="text-lg">Location: <span className="text-blue-600 font-semibold">{boardingDetails.location}</span></p>
+         <p className="text-lg">Price: <span className="text-blue-600 font-semibold">LKR {boardingDetails.price}</span></p>
+         <p className="text-lg">District: <span className="text-blue-600 font-semibold">{boardingDetails.district}</span></p>
+         <p className="text-lg">Type: <span className="text-blue-600 font-semibold">{boardingDetails.type}</span></p>
+    
+        {/* Contact Section with a Square Box */}
+        <div className="mt-4 p-4 border-2 border-green-500 rounded-lg w-fit flex items-center space-x-2 bg-green-100">
+        <span className="text-xl">📞</span>
+        <p className="text-green-500 font-semibold">Contact: <span className="text-black font-semibold">{boardingDetails.phone}</span></p>
+        </div>
+</div>
             {/* Review Section */}
             <div className="mt-8 p-6 border-t-2 border-gray-200">
                 <h3 className="text-2xl font-semibold">Leave a Review</h3>

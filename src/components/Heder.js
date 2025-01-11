@@ -91,9 +91,9 @@ const Header = () => {
                         <div className="absolute right-0 bg-white text-black mt-2 w-40 rounded shadow">
                             {user ? (
                                 <>
-                                    <a href="/profile" className="block px-4 py-2 hover:bg-gray-100">
+                                    {/* <a href="/profile" className="block px-4 py-2 hover:bg-gray-100">
                                         Personal Information
-                                    </a>
+                                    </a> */}
                                     <button
                                         onClick={() => setShowLogoutConfirm(true)}
                                         className="block w-full text-left px-4 py-2 hover:bg-gray-100"

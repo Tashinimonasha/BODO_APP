@@ -2,6 +2,8 @@ import React from "react";
 import logo from "../assets/footer/logo1.png";
 
 const Footer = () => {
+  const whatsappNumber = "0742388071"; // Replace with your WhatsApp number
+
   return (
       <footer className="bg-blue-950 text-white py-10">
         <div className="container mx-auto px-6">
@@ -29,7 +31,7 @@ const Footer = () => {
             <div className="flex flex-col items-center md:items-start">
               <h3 className="text-xl font-semibold mb-3">Contact Us</h3>
               <p className="mb-2">Email: <a href="mailto:info@bodoapp.com" className="hover:underline">info@bodoapp.com</a></p>
-              <p className="mb-2">Phone: <a href="tel:+94723000823" className="hover:underline">+94 723 000 823</a></p>
+              <p className="mb-2">Phone: <a href={`https://wa.me/${whatsappNumber}`} className="hover:underline">0742388071</a></p>
               <div className="flex space-x-6 mt-4">
                 <a href="https://facebook.com" target="_blank" rel="noreferrer">
                   <img src="https://img.icons8.com/ios-filled/30/ffffff/facebook.png" alt="Facebook" />
