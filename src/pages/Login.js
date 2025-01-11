@@ -86,7 +86,7 @@ const Login = () => {
       <ToastContainer />
       <div className="flex w-full max-w-6xl h-full max-h-screen bg-white rounded-lg shadow-lg overflow-hidden">
         <div className="w-1/2 p-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Welcome back! Glad to see you, Again!</h1>
+          <h1 className="text-3xl font-bold text-gray-800 mb-2">Welcome! Glad to see you.</h1>
           <p className="text-l text-gray-600 mb-6">Let’s Begin the Journey</p>
 
           <form onSubmit={handleSubmit}>
