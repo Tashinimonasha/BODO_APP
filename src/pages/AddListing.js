@@ -35,10 +35,11 @@ const PostAdPage = () => {
 
         if (!formData.title) newErrors.title = "Title is required.";
         if (!formData.description) newErrors.description = "Description is required.";
-        if (!formData.type) newErrors.type = "Type is required.";
+        if (!formData.type) newErrors.type = "Select the type.";
         if (!formData.monthlyRent) newErrors.monthlyRent = "Monthly rent is required.";
         if (!formData.location) newErrors.location = "Location is required.";
         if (!formData.phone) newErrors.phone = "Phone number is required.";
+        if (!formData.district) newErrors.district = "Select the district.";
         if (!formData.images.length) newErrors.images = "At least one image is required.";
 
         setErrors(newErrors);
@@ -216,7 +217,6 @@ const PostAdPage = () => {
         name="district"
         value={formData.district}
         onChange={handleChange}
-        required
         className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
     >
         <option value="" disabled>Select District</option>
@@ -279,7 +279,7 @@ const PostAdPage = () => {
         onInput={(e) => e.target.value = e.target.value.replace(/\D/g, '').slice(0, 10)}  // Allow only numbers and restrict length to 10
         className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
         maxLength="10"  // Restrict to 10 characters
-        required
+        
     />
     {errors.phone && <p className="text-red-500 text-sm">{errors.phone}</p>}
 </div>

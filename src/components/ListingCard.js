@@ -36,7 +36,7 @@ const ListingCard = ({ listing, showDeleteButton }) => {
             </div>
             <div className="flex justify-between items-center mb-2">
                 <h3 className="text-lg font-semibold">{listing.title}</h3>
-                <span className="text-green-600 font-bold">{listing.price}</span>
+                <span className="text-green-600 font-bold">LKR{listing.price}</span>
             </div>
             <p className="text-sm text-gray-700 mb-4">
                 {listing.description.length > 50
