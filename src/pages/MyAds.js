@@ -88,8 +88,11 @@ const ListingsPage = () => {
 
     const openEditModal = (listingId) => {
         const listingToEdit = listings.find(listing => listing.listingId === listingId);
-        setCurrentListingData(listingToEdit);
-        setEditModalIsOpen(true);
+        if (listingToEdit) {
+            setCurrentListingId(listingToEdit.listingId); // Set currentListingId as well
+            setCurrentListingData({ ...listingToEdit });  // Ensure data is set properly
+            setEditModalIsOpen(true);
+        }
     };
 
     const closeEditModal = () => {
@@ -98,16 +101,18 @@ const ListingsPage = () => {
     };
 
     const handleEdit = async () => {
+        if (!currentListingData) return;
+    
         try {
             const token = localStorage.getItem('token');
-            const response = await axios.put(`http://localhost:3000/api/boarding/${currentListingId}`, currentListingData, {
+            const response = await axios.put(`http://localhost:3000/api/boarding/update-listing/${currentListingId}`, currentListingData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
-
+    
             if (response.status === 200) {
-                const updatedListings = listings.map(listing => 
+                const updatedListings = listings.map(listing =>
                     listing.listingId === currentListingId ? currentListingData : listing
                 );
                 setListings(updatedListings);
@@ -118,7 +123,6 @@ const ListingsPage = () => {
             toast.error('Error updating listing');
         }
     };
-
     if (loading) {
         return <div>Loading...</div>;
     }
@@ -220,9 +224,42 @@ const ListingsPage = () => {
                         type="text"
                         value={currentListingData?.title || ''}
                         onChange={(e) => setCurrentListingData({ ...currentListingData, title: e.target.value })}
-                        className="w-full p-2 border border-gray-300 rounded-md"
+                        className="w-full p-2 border border-gray-300 rounded-md mb-4"
                     />
-                    {/* Add additional fields for editing */}
+                    <label className="block text-sm font-medium text-gray-700">District</label>
+                    <input
+                        type="text"
+                        value={currentListingData?.district || ''}
+                        onChange={(e) => setCurrentListingData({ ...currentListingData, district: e.target.value })}
+                        className="w-full p-2 border border-gray-300 rounded-md mb-4"
+                    />
+                    <label className="block text-sm font-medium text-gray-700">Location</label>
+                    <input
+                        type="text"
+                        value={currentListingData?.location || ''}
+                        onChange={(e) => setCurrentListingData({ ...currentListingData, location: e.target.value })}
+                        className="w-full p-2 border border-gray-300 rounded-md mb-4"
+                    />
+                    <label className="block text-sm font-medium text-gray-700">Price</label>
+                    <input
+                        type="number"
+                        value={currentListingData?.price || ''}
+                        onChange={(e) => setCurrentListingData({ ...currentListingData, price: e.target.value })}
+                        className="w-full p-2 border border-gray-300 rounded-md mb-4"
+                    />
+                    <label className="block text-sm font-medium text-gray-700">Phone</label>
+                    <input
+                        type="tel"
+                        value={currentListingData?.phone || ''}
+                        onChange={(e) => setCurrentListingData({ ...currentListingData, phone: e.target.value })}
+                        className="w-full p-2 border border-gray-300 rounded-md mb-4"
+                    />
+                    <label className="block text-sm font-medium text-gray-700">Description</label>
+                    <textarea
+                        value={currentListingData?.description || ''}
+                        onChange={(e) => setCurrentListingData({ ...currentListingData, description: e.target.value })}
+                        className="w-full p-2 border border-gray-300 rounded-md mb-4"
+                    />
                 </div>
                 <div className="mt-4 flex justify-between">
                     <button
