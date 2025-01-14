@@ -4,6 +4,7 @@ import { TrashIcon } from '@heroicons/react/outline';
 import { ToastContainer, toast } from 'react-toastify';
 import Modal from 'react-modal';
 import 'react-toastify/dist/ReactToastify.css';
+const apiUrl = process.env.REACT_APP_API_URL;
 
 Modal.setAppElement('#root');
 
@@ -37,7 +38,7 @@ const ListingsPage = () => {
                 const parsedUserData = JSON.parse(userData);
                 const userId = parsedUserData.uid;
 
-                const response = await axios.get(`http://localhost:3000/api/boarding/user-listings/${userId}`, {
+                const response = await axios.get(`${apiUrl}/boarding/user-listings/${userId}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -68,7 +69,7 @@ const ListingsPage = () => {
         setIsDeleting(true);
         try {
             const token = localStorage.getItem('token');
-            const response = await axios.delete(`http://localhost:3000/api/boarding/${currentListingId}`, {
+            const response = await axios.delete(`${apiUrl}/boarding/${currentListingId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -105,7 +106,7 @@ const ListingsPage = () => {
     
         try {
             const token = localStorage.getItem('token');
-            const response = await axios.put(`http://localhost:3000/api/boarding/update-listing/${currentListingId}`, currentListingData, {
+            const response = await axios.put(`${apiUrl}/boarding/update-listing/${currentListingId}`, currentListingData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

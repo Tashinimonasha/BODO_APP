@@ -4,6 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Link } from 'react-router-dom';
 import img from "../assets/login/img.png";
 import backgroundImage from "../assets/backgrounds/background.png";
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -48,7 +49,7 @@ const Login = () => {
 
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:3000/api/auth/login', {
+      const response = await fetch(`${apiUrl}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

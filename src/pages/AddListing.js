@@ -3,6 +3,8 @@ import axios from "axios";
 import backgroundImage from "../assets/backgrounds/img_1.png";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+const apiUrl = process.env.REACT_APP_API_URL;
+
 
 const PostAdPage = () => {
     const [formData, setFormData] = useState({
@@ -96,7 +98,7 @@ const PostAdPage = () => {
 
         try {
             const response = await axios.post(
-                "http://localhost:3000/api/boarding/add-listing",
+                `${apiUrl}/boarding/add-listing`,
                 formDataToSend,
                 {
                     headers: {

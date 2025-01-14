@@ -3,6 +3,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import registerImage from "../assets/register/loginnew.jpg";
 import backgroundImage from "../assets/backgrounds/background.png";
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const Register = () => {
     const [loading, setLoading] = useState(false); // Loading state
@@ -84,7 +85,7 @@ const Register = () => {
 
         if (validateForm()) {
             try {
-                const response = await fetch('http://localhost:3000/api/auth/register', {
+                const response = await fetch(`${apiUrl}/auth/register`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(formData)

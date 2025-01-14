@@ -5,6 +5,7 @@ import { FaHeart, FaRegHeart } from 'react-icons/fa';
 import { AiFillStar, AiOutlineStar } from 'react-icons/ai';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const BoardingDetailsPage = () => {
     const { boardingId } = useParams();
@@ -33,13 +34,13 @@ const BoardingDetailsPage = () => {
     useEffect(() => {
         const fetchBoardingDetails = async () => {
             try {
-                const response = await axios.get(`http://localhost:3000/api/boarding/get-listing/${boardingId}`);
+                const response = await axios.get(`${apiUrl}/boarding/get-listing/${boardingId}`);
                 setBoardingDetails(response.data.data); // Set details to data
                 setIsSaved(response.data.data.isSaved);
                 setIsLoading(false);
 
                 // Fetch reviews for this boarding
-                const reviewsResponse = await axios.get(`http://localhost:3000/api/review/get-reviews/${boardingId}`);
+                const reviewsResponse = await axios.get(`${apiUrl}/review/get-reviews/${boardingId}`);
                 setReviews(reviewsResponse.data); // Set reviews data
             } catch (error) {
                 console.error('Error fetching boarding details:', error);
@@ -62,7 +63,7 @@ const BoardingDetailsPage = () => {
 
         try {
             await axios.post(
-                `http://localhost:3000/api/boarding/submit-review/${boardingId}`,
+                `${apiUrl}/boarding/submit-review/${boardingId}`,
                 {
                     comment,
                     rating,
@@ -79,7 +80,7 @@ const BoardingDetailsPage = () => {
             setRating(0);
 
             // Fetch the updated reviews
-            const updatedReviewsResponse = await axios.get(`http://localhost:3000/api/review/get-reviews/${boardingId}`);
+            const updatedReviewsResponse = await axios.get(`${apiUrl}/review/get-reviews/${boardingId}`);
             setReviews(updatedReviewsResponse.data);
         } catch (error) {
             console.error('Error submitting review:', error);
@@ -99,7 +100,7 @@ const BoardingDetailsPage = () => {
 
         try {
             await axios.post(
-                `http://localhost:3000/api/boarding/save/${boardingId}`,
+                `${apiUrl}/boarding/save/${boardingId}`,
                 {},
                 {
                     headers: {

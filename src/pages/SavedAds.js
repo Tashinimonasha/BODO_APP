@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ListingCard from '../components/ListingCard';
 import axios from 'axios';
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const SavedListingsPage = () => {
     const [savedListings, setSavedListings] = useState([]);
@@ -22,7 +23,7 @@ const SavedListingsPage = () => {
 
         const fetchSavedListings = async () => {
             try {
-                const response = await axios.get(`http://localhost:3000/api/boarding/saved/${userId}`, {
+                const response = await axios.get(`${apiUrl}/boarding/saved/${userId}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setSavedListings(response.data.data);

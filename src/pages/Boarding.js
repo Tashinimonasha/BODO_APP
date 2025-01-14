@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const districts = ['All', 'Galle', 'Matara', 'Colombo', 'Hambanthota', 'Kalutara', 'Kandy', 'Kegalle', 'Rathnapura', 'Gampaha', 'Anuradhapura', 'Polonnaruwa', 'Matale', 'Nuwara Eliya', 'Kurunegala', 'Puttalam', 'Trincomalee', 'Batticaloa', 'Ampara', 'Badulla', 'Monaragala', 'Hambanthota', 'Mullaitivu', 'Vavuniya', 'Kilinochchi', 'Jaffna'];
 
@@ -16,8 +17,7 @@ const Boarding = () => {
     useEffect(() => {
         const fetchListings = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/api/boarding/get-listings');
-
+                const response = await axios.get(`${apiUrl}/boarding/get-listings`);
                 if (Array.isArray(response.data.data)) {
                     setListings(response.data.data);
                     setFilteredData(response.data.data);

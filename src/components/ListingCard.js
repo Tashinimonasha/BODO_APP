@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { TrashIcon } from '@heroicons/react/outline';
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const ListingCard = ({ listing, showDeleteButton }) => {
     const navigate = useNavigate();
@@ -14,7 +15,7 @@ const ListingCard = ({ listing, showDeleteButton }) => {
         const token = localStorage.getItem('token');
 
         try {
-            await axios.delete(`http://localhost:3000/api/boarding/delete/${listing.id}`, {
+            await axios.delete(`${apiUrl}/boarding/delete/${listing.id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
