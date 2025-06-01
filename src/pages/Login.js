@@ -44,38 +44,50 @@ const Login = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validateForm()) return;
+  e.preventDefault();
+  if (!validateForm()) return;
 
-    setLoading(true);
-    try {
-      const response = await fetch(`${apiUrl}/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: formData.username,
-          password: formData.password
-        }),
-      });
+  // Directly redirect if it's the admin
+  if (
+    formData.username === "admin" &&
+    formData.password === "fjgbdh344512@E"
+  ) {
+    toast.success('Admin login successful!');
+    window.location.href = '/admin/dashboard';
+    return;
+  }
 
-      const data = await response.json();
+  setLoading(true);
+  try {
+    const response = await fetch(`${apiUrl}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: formData.username,
+        password: formData.password
+      }),
+    });
 
-      if (!response.ok) {
-        throw new Error(data.message || 'Login failed');
-      }
+    const data = await response.json();
 
-      toast.success('Login successful!');
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
-      window.location.href = '/boarding';
-
-    } catch (error) {
-      toast.error(error.message);
-      setErrors((prevErrors) => ({ ...prevErrors, form: error.message }));
-    } finally {
-      setLoading(false);
+    if (!response.ok) {
+      throw new Error(data.message || 'Login failed');
     }
-  };
+
+    toast.success('Login successful!');
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('user', JSON.stringify(data.user));
+    window.location.href = '/boarding';
+
+  } catch (error) {
+    toast.error(error.message);
+    setErrors((prevErrors) => ({ ...prevErrors, form: error.message }));
+  } finally {
+    setLoading(false);
+  }
+};
+
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-white"
