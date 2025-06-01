@@ -16,7 +16,7 @@ const AdminHeader = () => {
   return (
     <>
       <header className="bg-gray-900 text-white px-6 py-4 shadow-md flex justify-between items-center">
-        <h1 className="text-xl font-bold">🏢 Admin Panel</h1>
+        <h1 className="text-2xl font-bold">🏢 Admin Panel</h1>
         <nav className="flex gap-6 text-sm">
           <Link to="/admin/dashboard" className="hover:text-blue-300">
             Dashboard
