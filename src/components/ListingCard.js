@@ -30,10 +30,11 @@ const ListingCard = ({ listing, showDeleteButton }) => {
         <div className="bg-white shadow-md rounded-lg p-4 w-72 mb-4">
             <div className="mb-4">
                 <img
-                    src={listing.images[0]}
+                    src={listing.images && listing.images.length > 0 ? listing.images[0] : '/placeholder.jpg'}
                     alt={listing.title}
                     className="w-full h-40 object-cover rounded-md"
                 />
+
             </div>
             <div className="flex justify-between items-center mb-2">
                 <h3 className="text-lg font-semibold">{listing.title}</h3>
