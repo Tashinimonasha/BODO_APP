@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { FaWhatsapp, FaMapMarkerAlt, FaPhone } from 'react-icons/fa';
 const apiUrl = process.env.REACT_APP_API_URL;
 
 const ContactForm = () => {
@@ -12,7 +13,14 @@ const ContactForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const formData = { name, email, phone, message };
+        const formData = { 
+            name, 
+            email, 
+            phone, 
+            message,
+            toEmail: 'tashinimonasha44@gmail.com', // Your email address
+            subject: 'New Contact Form Submission - BODO APP'
+        };
 
         try {
             const response = await fetch(`${apiUrl}/user/contact-us`, {
@@ -24,7 +32,7 @@ const ContactForm = () => {
             const result = await response.json();
 
             if (response.ok) {
-                toast.success('Message sent successfully!');
+                toast.success('Message sent successfully! We will get back to you soon.');
                 setName('');
                 setEmail('');
                 setPhone('');
@@ -34,89 +42,119 @@ const ContactForm = () => {
             }
         } catch (error) {
             console.error('Error:', error);
-            toast.error('Error sending message.');
+            toast.error('Error sending message. Please try again later.');
         }
     };
 
-    const whatsappNumber = '0742388071'; // Replace with the actual WhatsApp number
+    const whatsappNumber = '+94775801679'; // Replace with the actual WhatsApp number
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-white p-6">
-            <div className="bg-white shadow-lg rounded-lg p-8 max-w-lg w-full border-2 border-yellow-500">
-                <h2 className="text-3xl font-bold text-center text-blue-700 mb-6">Contact Us</h2>
-
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    {/* Name Field */}
-                    <div>
-                        <label className="block text-gray-700 font-medium mb-2">Your Name</label>
-                        <input
-                            type="text"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            required
-                            className="w-full p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-                        />
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 p-6">
+            <div className="max-w-6xl w-full bg-white rounded-lg shadow-lg p-8 grid md:grid-cols-2 gap-8">
+                {/* Left side - Map and Contact Info */}
+                <div>
+                    <iframe
+                        title="Location Map"
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d63371.80385596634!2d80.19675765820313!3d6.053518999999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae173bb6932fce3%3A0x4a35b903f9c64c03!2sGalle!5e0!3m2!1sen!2slk!4v1693568789012!5m2!1sen!2slk"
+                        className="w-full h-64 rounded-lg mb-6"
+                        style={{ border: 0 }}
+                        allowFullScreen=""
+                        loading="lazy"
+                    />
+                    <div className="space-y-4">
+                        <div className="flex items-center text-gray-600">
+                            <FaMapMarkerAlt className="text-blue-600 mr-3 text-xl" />
+                            <p>No:17, Galle, Southern, Sri Lanka</p>
+                        </div>
+                        <div className="flex items-center text-gray-600">
+                            <FaPhone className="text-blue-600 mr-3 text-xl" />
+                            <p>+94742388071, +94775801679</p>
+                        </div>
                     </div>
+                </div>
 
-                    {/* Email Field */}
-                    <div>
-                        <label className="block text-gray-700 font-medium mb-2">Your Email</label>
-                        <input
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                            className="w-full p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-                        />
-                    </div>
+                {/* Right side - Contact Form */}
+                <div>
+                    <h2 className="text-3xl font-bold text-blue-600 mb-6">Contact Us</h2>
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-gray-600 mb-2">First Name</label>
+                                <input
+                                    type="text"
+                                    placeholder="Enter your first name"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-gray-600 mb-2">Last Name</label>
+                                <input
+                                    type="text"
+                                    placeholder="Enter your last name"
+                                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                                />
+                            </div>
+                        </div>
 
-                    {/* Phone Field */}
-                    <div>
-                        <label className="block text-gray-700 font-medium mb-2">Phone Number</label>
-                        <input
-                            type="tel"
-                            value={phone}
-                            onChange={(e) => setPhone(e.target.value)}
-                            required
-                            className="w-full p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-                        />
-                    </div>
+                        <div>
+                            <label className="block text-gray-600 mb-2">Email</label>
+                            <input
+                                type="email"
+                                placeholder="e.g johndoe@gmail.com"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                                required
+                            />
+                        </div>
 
-                    {/* Message Field */}
-                    <div>
-                        <label className="block text-gray-700 font-medium mb-2">Your Message</label>
-                        <textarea
-                            value={message}
-                            onChange={(e) => setMessage(e.target.value)}
-                            required
-                            className="w-full p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-                        />
-                    </div>
+                        <div>
+                            <label className="block text-gray-600 mb-2">Phone Number</label>
+                            <div className="flex">
+                                <select className="p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 mr-2">
+                                    <option value="+94">+94</option>
+                                </select>
+                                <input
+                                    type="tel"
+                                    value={phone}
+                                    onChange={(e) => setPhone(e.target.value)}
+                                    className="flex-1 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                                    required
+                                />
+                            </div>
+                        </div>
 
-                    {/* Submit Button */}
-                    <button
-                        type="submit"
-                        className="w-full bg-green-600 text-white p-3 rounded-lg hover:bg-green-700 transition duration-300"
-                    >
-                        Send Message
-                    </button>
-                </form>
+                        <div>
+                            <label className="block text-gray-600 mb-2">Message or Enquiry</label>
+                            <textarea
+                                placeholder="Type something"
+                                value={message}
+                                onChange={(e) => setMessage(e.target.value)}
+                                className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 h-32"
+                                required
+                            />
+                        </div>
 
-                {/* WhatsApp Feature */}
-                <div className="mt-6 text-center">
-                    <a
-                        href={`https://wa.me/${whatsappNumber}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center bg-green-600 text-white p-3 rounded-lg hover:bg-green-700 transition duration-300"
-                    >
-                        <span className="mr-2">Chat with us on WhatsApp</span>
-                        <img
-                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/1024px-WhatsApp.svg.png"
-                            alt="WhatsApp"
-                            className="w-6 h-6"
-                        />
-                    </a>
+                        <button
+                            type="submit"
+                            className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition duration-300"
+                        >
+                            Send Message
+                        </button>
+
+                        <a
+                            href={`https://wa.me/${whatsappNumber}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full flex items-center justify-center bg-green-500 text-white py-3 rounded-lg hover:bg-green-600 transition duration-300 mt-4"
+                        >
+                            <FaWhatsapp className="text-xl mr-2" />
+                            Chat with us on WhatsApp
+                        </a>
+                    </form>
                 </div>
             </div>
 

@@ -9,26 +9,43 @@ const SavedListingsPage = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const userData = localStorage.getItem('user');
-        const token = localStorage.getItem('token');
-
-        if (!userData || !token) {
-            setError("No user data or token found.");
-            setLoading(false);
-            return;
-        }
-
-        const parsedUserData = JSON.parse(userData);
-        const userId = parsedUserData.uid;
-
         const fetchSavedListings = async () => {
             try {
+                const userData = localStorage.getItem('user');
+                const token = localStorage.getItem('token');
+
+                if (!userData || !token) {
+                    setError("Please log in to view saved listings");
+                    setLoading(false);
+                    return;
+                }
+
+                const parsedUserData = JSON.parse(userData);
+                const userId = parsedUserData.uid;
+
                 const response = await axios.get(`${apiUrl}/boarding/saved/${userId}`, {
-                    headers: { Authorization: `Bearer ${token}` }
+                    headers: { 
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
                 });
-                setSavedListings(response.data.data);
+                
+                if (response.data && response.data.data) {
+                    setSavedListings(response.data.data);
+                } else {
+                    setSavedListings([]);
+                }
             } catch (err) {
-                setError('Failed to fetch saved listings');
+                console.error('Error details:', err.response || err);
+                if (err.response && err.response.status === 401) {
+                    setError('Your session has expired. Please log in again.');
+                    // Clear invalid token
+                    localStorage.removeItem('token');
+                    // Optionally redirect to login
+                    window.location.href = '/login';
+                } else {
+                    setError('Failed to fetch saved listings. Please try again.');
+                }
             } finally {
                 setLoading(false);
             }
