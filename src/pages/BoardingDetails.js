@@ -226,7 +226,23 @@ const BoardingDetailsPage = () => {
 
             {/* Save and Like Button */}
             <div className="flex items-center justify-between mt-4">
-                <h2 className="text-3xl font-semibold">{boardingDetails.title}</h2>
+                <div className="flex items-center gap-4">
+                    <h2 className="text-3xl font-semibold">{boardingDetails.title}</h2>
+                    {boardingDetails.isAvailable === true ? (
+                        <span className="bg-green-600 bg-opacity-90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium text-white shadow-sm ml-2">
+                            Available
+                        </span>
+                    ) : (
+                        <span className="bg-red-600 bg-opacity-90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium text-white shadow-sm ml-2">
+                            Not Available
+                        </span>
+                    )}
+                    {boardingDetails.isReleased === true && (
+                        <span className="bg-red-200 bg-opacity-90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium text-red-800 shadow-sm ml-2">
+                            Released Soon
+                        </span>
+                    )}
+                </div>
                 <div onClick={handleSaveToggle} className="cursor-pointer">
                     {isSaved ? <FaHeart size={30} className="text-red-600" /> : <FaRegHeart size={30} />}
                 </div>

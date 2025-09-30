@@ -211,6 +211,19 @@ const ListingsPage = () => {
                                         
                                         <div className="space-y-4">
                                             <div className="grid grid-cols-2 gap-4">
+                                                {(
+                                                    <div className="col-span-2 flex justify-end">
+                                                        {listing.isAvailable === true ? (
+                                                            <span className="bg-green-600 bg-opacity-90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium text-white shadow-sm">
+                                                                Available
+                                                            </span>
+                                                        ) : (
+                                                            <span className="bg-red-600 bg-opacity-90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium text-white shadow-sm">
+                                                                Not Available
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                )}
                                                 <div className="bg-gray-50 p-4 rounded-lg hover:bg-white hover:shadow-md transition-all duration-300 ease-in-out transform hover:scale-105">
                                                     <p className="text-sm font-medium text-gray-500">District</p>
                                                     <p className="mt-1 text-lg font-semibold text-gray-900">{listing.district}</p>
@@ -226,9 +239,8 @@ const ListingsPage = () => {
                                                 <div className="bg-gray-50 p-4 rounded-lg hover:bg-white hover:shadow-md transition-all duration-300 ease-in-out transform hover:scale-105">
                                                     <p className="text-sm font-medium text-gray-500">Phone</p>
                                                     <p className="mt-1 text-lg font-semibold text-gray-900">{listing.phone}</p>
-                                                </div>
+                                                </div>                                                
                                             </div>
-                                            
                                             <div className="bg-gray-50 p-4 rounded-lg">
                                                 <p className="text-sm font-medium text-gray-500">Description</p>
                                                 <p className="mt-1 text-gray-900">{listing.description}</p>
@@ -348,6 +360,34 @@ const ListingsPage = () => {
                                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                             />
                         </div>
+
+                        <div className="flex items-center mt-2 md:col-span-2">
+                            <input
+                                id="available-checkbox"
+                                type="checkbox"
+                                checked={!!currentListingData?.isAvailable}
+                                onChange={e => setCurrentListingData({ 
+                                    ...currentListingData, 
+                                    isAvailable: e.target.checked,
+                                    isReleased: e.target.checked ? false : currentListingData?.isReleased
+                                })}
+                                className="mr-2 h-4 w-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                            />
+                            <label htmlFor="available-checkbox" className="text-sm font-medium text-gray-700 select-none">Available</label>
+                        </div>
+
+                        {!currentListingData?.isAvailable && (
+                            <div className="flex items-center mt-2 md:col-span-2">
+                                <input
+                                    id="released-checkbox"
+                                    type="checkbox"
+                                    checked={!!currentListingData?.isReleased}
+                                    onChange={e => setCurrentListingData({ ...currentListingData, isReleased: e.target.checked })}
+                                    className="mr-2 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                                />
+                                <label htmlFor="released-checkbox" className="text-sm font-medium text-gray-700 select-none">Released</label>
+                            </div>
+                        )}
 
                         <div className="md:col-span-2">
                             <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>

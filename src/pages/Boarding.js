@@ -156,9 +156,22 @@ const Boarding = () => {
                                             alt={listing.title}
                                             className="w-full h-52 object-cover group-hover:scale-105 transition-transform duration-300"
                                         />
-                                        <div className="absolute top-3 right-3 bg-green-600 bg-opacity-90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium text-white shadow-sm">
-                                            Featured
+                                        <div className="absolute top-3 right-3">
+                                            {listing.isAvailable === true ? (
+                                                <span className="bg-green-600 bg-opacity-90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium text-white shadow-sm">
+                                                    Available
+                                                </span>
+                                            ) : (
+                                                <span className="bg-red-600 bg-opacity-90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium text-white shadow-sm">
+                                                    Not Available
+                                                </span>
+                                            )}
                                         </div>
+                                        {listing.isReleased === true && (
+                                            <div className="absolute inset-0 bg-red-100 bg-opacity-70 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                                <span className="text-red-800 font-semibold text-lg">Released Soon</span>
+                                            </div>
+                                        )}
                                     </div>
                                     <div className="p-5">
                                         <h3 className="text-lg font-semibold text-gray-800 mb-2 group-hover:text-blue-600 transition-colors">{listing.title}</h3>
