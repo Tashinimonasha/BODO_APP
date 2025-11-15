@@ -23,6 +23,7 @@ import ForgotPassword from "./pages/Forgotpassword";
 import AdminDashboard from "./pages/AdminDashboard";
 import UsersPage from "./pages/UsersPage";
 import AdminListingsPage from "./pages/AdminListingsPage";
+import PaymentHistory from "./pages/PaymentHistory";
 
 const Layout = () => {
   const location = useLocation();
@@ -48,6 +49,7 @@ const Layout = () => {
           <Route path="/our-services" element={<OurServices />} />
           <Route path="/my-ads" element={<ListingsPage />} />
           <Route path="/saved-ads" element={<SavedAds />} />
+          <Route path="/payment-history/:boardingId" element={<PaymentHistory />} />
 
           {/* Admin Routes */}
           <Route path="/admin/dashboard" element={<AdminDashboard />} />

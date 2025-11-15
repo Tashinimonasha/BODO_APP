@@ -3,12 +3,14 @@ import axios from 'axios';
 import { TrashIcon } from '@heroicons/react/outline';
 import { ToastContainer, toast } from 'react-toastify';
 import Modal from 'react-modal';
+import { useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 const apiUrl = process.env.REACT_APP_API_URL;
 
 Modal.setAppElement('#root');
 
 const ListingsPage = () => {
+    const navigate = useNavigate();
     const [listings, setListings] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -124,6 +126,11 @@ const ListingsPage = () => {
             toast.error('Error updating listing');
         }
     };
+
+    const handleViewPaymentHistory = (boardingId, boardingTitle) => {
+        navigate(`/payment-history/${boardingId}`, { state: { boardingTitle } });
+    };
+
     if (loading) {
         return <div>Loading...</div>;
     }
@@ -175,6 +182,16 @@ const ListingsPage = () => {
                                     <div className="flex items-center justify-between mb-6">
                                         <h2 className="text-2xl font-bold text-gray-900">{listing.title}</h2>
                                         <div className="flex space-x-3">
+                                            <button
+                                                onClick={() => handleViewPaymentHistory(listing.listingId, listing.title)}
+                                                className="inline-flex items-center px-4 py-2 border border-green-500 rounded-md shadow-sm text-sm font-medium text-green-500 bg-white hover:bg-green-50 hover:border-green-600 hover:text-green-600 hover:shadow-md transform hover:scale-105 transition-all duration-200 ease-in-out"
+                                            >
+                                                <svg className="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z" />
+                                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clipRule="evenodd" />
+                                                </svg>
+                                                Payment History
+                                            </button>
                                             <button
                                                 onClick={() => openEditModal(listing.listingId)}
                                                 className="inline-flex items-center px-4 py-2 border border-blue-500 rounded-md shadow-sm text-sm font-medium text-blue-500 bg-white hover:bg-blue-50 hover:border-blue-600 hover:text-blue-600 hover:shadow-md transform hover:scale-105 transition-all duration-200 ease-in-out"

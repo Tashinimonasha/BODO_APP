@@ -347,18 +347,19 @@ const BoardingDetailsPage = () => {
         <div className="mt-6">
             <button
                 onClick={handlePaymentClick}
-                disabled={!boardingDetails.isAvailable}
-                className={`px-8 py-3 rounded-lg font-semibold text-white transition-all ${
-                    boardingDetails.isAvailable 
-                        ? 'bg-blue-600 hover:bg-blue-700 cursor-pointer' 
-                        : 'bg-gray-400 cursor-not-allowed opacity-60'
-                }`}
+                className="group relative px-8 py-4 bg-gradient-to-r from-green-500 via-green-600 to-emerald-600 hover:from-green-600 hover:via-emerald-600 hover:to-emerald-700 text-white rounded-xl font-bold text-lg shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 ease-in-out overflow-hidden"
             >
-                Pay
+                <span className="relative z-10 flex items-center justify-center gap-3">
+                    <svg className="w-6 h-6 group-hover:animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    Make Payment
+                    <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                </span>
+                <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out"></div>
             </button>
-            {!boardingDetails.isAvailable && (
-                <p className="text-red-500 text-sm mt-2">Payment is only available when the boarding is available.</p>
-            )}
         </div>
 </div>
             {/* Overall Rating Section */}
