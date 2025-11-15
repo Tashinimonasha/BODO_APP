@@ -19,6 +19,15 @@ const BoardingDetailsPage = () => {
     const [user, setUser] = useState(null);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+    const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+    const [paymentDetails, setPaymentDetails] = useState({
+        cardNumber: '',
+        cardName: '',
+        expiryDate: '',
+        cvv: ''
+    });
+    const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+    const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
     // ** Check if user is logged in **
     useEffect(() => {
@@ -114,6 +123,78 @@ const BoardingDetailsPage = () => {
         } catch (error) {
             console.error('Error saving boarding:', error);
             toast.error('Boarding Already Saved!');
+        }
+    };
+
+    // ** Handle Payment Button Click **
+    const handlePaymentClick = () => {
+        if (!user) {
+            toast.error('You must be logged in to make a payment.');
+            navigate('/login');
+            return;
+        }
+        setIsPaymentModalOpen(true);
+    };
+
+    // ** Handle Payment Details Change **
+    const handlePaymentDetailsChange = (e) => {
+        const { name, value } = e.target;
+        setPaymentDetails(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    // ** Handle Payment Verification **
+    const handleVerifyPayment = async () => {
+        // Validate payment details
+        if (!paymentDetails.cardNumber || !paymentDetails.cardName || !paymentDetails.expiryDate || !paymentDetails.cvv) {
+            toast.error('Please fill in all payment details.');
+            return;
+        }
+
+        setIsProcessingPayment(true);
+        const token = localStorage.getItem('token');
+
+        try {
+            // Call payment create API
+            await axios.post(
+                `${apiUrl}/payment/create`,
+                {
+                    boardingId: boardingId,
+                    amount: boardingDetails.price
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            // Close payment modal
+            setIsPaymentModalOpen(false);
+            
+            // Reset payment details
+            setPaymentDetails({
+                cardNumber: '',
+                cardName: '',
+                expiryDate: '',
+                cvv: ''
+            });
+
+            // Show success popup
+            setShowSuccessPopup(true);
+
+            // Auto close success popup after 3 seconds
+            setTimeout(() => {
+                setShowSuccessPopup(false);
+            }, 3000);
+
+        } catch (error) {
+            console.error('Error processing payment:', error);
+            toast.error('Payment failed. Please try again.');
+        } finally {
+            setIsProcessingPayment(false);
         }
     };
 
@@ -261,6 +342,24 @@ const BoardingDetailsPage = () => {
         <span className="text-xl">📞</span>
         <p className="text-green-500 font-semibold">Contact: <span className="text-black font-semibold">{boardingDetails.phone}</span></p>
         </div>
+
+        {/* Payment Button */}
+        <div className="mt-6">
+            <button
+                onClick={handlePaymentClick}
+                disabled={!boardingDetails.isAvailable}
+                className={`px-8 py-3 rounded-lg font-semibold text-white transition-all ${
+                    boardingDetails.isAvailable 
+                        ? 'bg-blue-600 hover:bg-blue-700 cursor-pointer' 
+                        : 'bg-gray-400 cursor-not-allowed opacity-60'
+                }`}
+            >
+                Pay
+            </button>
+            {!boardingDetails.isAvailable && (
+                <p className="text-red-500 text-sm mt-2">Payment is only available when the boarding is available.</p>
+            )}
+        </div>
 </div>
             {/* Overall Rating Section */}
             <div className="mt-8 bg-white rounded-lg shadow-lg p-6">
@@ -368,6 +467,163 @@ const BoardingDetailsPage = () => {
                 </button>
             </div>
             
+            {/* Payment Gateway Modal */}
+            {isPaymentModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" onClick={() => setIsPaymentModalOpen(false)}>
+                    <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg p-8 relative" onClick={(e) => e.stopPropagation()}>
+                        {/* Close Button */}
+                        <button 
+                            onClick={() => setIsPaymentModalOpen(false)}
+                            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+                        >
+                            <FaTimes size={24} />
+                        </button>
+
+                        {/* Header */}
+                        <div className="flex items-center gap-3 mb-2">
+                            <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
+                                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h2 className="text-2xl font-bold text-gray-800">Secure Your Booking</h2>
+                                <p className="text-blue-600 text-sm font-medium">You're almost there!</p>
+                            </div>
+                        </div>
+
+                        {/* Payment Summary */}
+                        <div className="mt-6 mb-6">
+                            <h3 className="text-lg font-bold text-gray-800 mb-3">Payment Summary</h3>
+                            <div className="space-y-2">
+                                <div className="flex justify-between text-gray-700">
+                                    <span>Advance Payment</span>
+                                    <span className="font-semibold">LKR {(Number(boardingDetails.price) / 2).toFixed(2)}</span>
+                                </div>
+                                <div className="flex justify-between text-gray-700">
+                                    <span>Key Money Deposit</span>
+                                    <span className="font-semibold">LKR {(Number(boardingDetails.price) / 2).toFixed(2)}</span>
+                                </div>
+                                <div className="flex justify-between text-gray-900 font-bold text-lg pt-2 border-t border-gray-300">
+                                    <span>Total Due Now:</span>
+                                    <span>LKR {Number(boardingDetails.price).toFixed(2)}</span>
+                                </div>
+                            </div>
+
+                            {/* Payment Method Icons */}
+                            <div className="flex items-center gap-2 mt-3 justify-end">
+                                <div className="px-3 py-1.5 bg-blue-600 text-white font-bold text-xs rounded">VISA</div>
+                                <div className="px-3 py-1.5 bg-blue-500 text-white font-bold text-xs rounded flex items-center">
+                                    <span className="text-lg">💳</span>
+                                </div>
+                                <div className="px-3 py-1.5 bg-blue-600 text-white font-bold text-xs rounded">P</div>
+                                <div className="px-3 py-1.5 bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500 text-white font-bold text-xs rounded flex items-center gap-0.5">
+                                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                                    <div className="w-3 h-3 rounded-full bg-yellow-500 -ml-1.5"></div>
+                                </div>
+                                <div className="px-3 py-1.5 bg-gray-600 text-white font-bold text-xs rounded">🏦</div>
+                            </div>
+                        </div>
+
+                        {/* Payment Details */}
+                        <div className="mb-6">
+                            <h3 className="text-lg font-bold text-gray-800 mb-3">Payment Details</h3>
+                            <div className="grid grid-cols-2 gap-4">
+                                <input
+                                    type="text"
+                                    name="cardNumber"
+                                    value={paymentDetails.cardNumber}
+                                    onChange={handlePaymentDetailsChange}
+                                    placeholder="Card Number"
+                                    maxLength="19"
+                                    className="col-span-2 px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                                />
+                                <input
+                                    type="text"
+                                    name="cardName"
+                                    value={paymentDetails.cardName}
+                                    onChange={handlePaymentDetailsChange}
+                                    placeholder="Cardholder Name"
+                                    className="px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                                />
+                                <input
+                                    type="text"
+                                    name="expiryDate"
+                                    value={paymentDetails.expiryDate}
+                                    onChange={handlePaymentDetailsChange}
+                                    placeholder="Expiry Date (MM/YY)"
+                                    maxLength="5"
+                                    className="px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                                />
+                                <input
+                                    type="text"
+                                    name="cvv"
+                                    value={paymentDetails.cvv}
+                                    onChange={handlePaymentDetailsChange}
+                                    placeholder="CVV"
+                                    maxLength="3"
+                                    className="px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                                />
+                                <input
+                                    type="text"
+                                    name="cvv"
+                                    placeholder="CVV"
+                                    className="px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                                    disabled
+                                />
+                            </div>
+                        </div>
+
+                        {/* Terms & Conditions */}
+                        <div className="mb-6 bg-gray-50 p-4 rounded-md">
+                            <h3 className="text-base font-bold text-gray-800 mb-2">Terms & Conditions</h3>
+                            <ul className="text-xs text-gray-600 space-y-1 list-disc list-inside">
+                                <li>This is non-refundable advance payment and key money deposit.</li>
+                                <li>Secures your booking for days.</li>
+                                <li>Remaining balance of LKR 40,000.00 due upon move-in.</li>
+                                <li>By clicking <span className="text-blue-600 font-medium">'BODO APP's Terms of Service and Refund Policy'</span></li>
+                            </ul>
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="flex gap-4">
+                            <button
+                                onClick={() => setIsPaymentModalOpen(false)}
+                                className="flex-1 py-3 px-6 border-2 border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition-all"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleVerifyPayment}
+                                disabled={isProcessingPayment}
+                                className={`flex-1 py-3 px-6 rounded-lg font-semibold text-white transition-all ${
+                                    isProcessingPayment 
+                                        ? 'bg-gray-400 cursor-not-allowed' 
+                                        : 'bg-blue-600 hover:bg-blue-700'
+                                }`}
+                            >
+                                {isProcessingPayment ? 'Processing...' : 'Confirm Payment'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Success Popup */}
+            {showSuccessPopup && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white rounded-lg shadow-2xl p-8 max-w-sm mx-4 text-center animate-bounce">
+                        <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                        </div>
+                        <h3 className="text-2xl font-bold text-gray-800 mb-2">Payment Successful!</h3>
+                        <p className="text-gray-600">Your payment has been processed successfully.</p>
+                    </div>
+                </div>
+            )}
+
             {/* ToastContainer displaying notifications */}
             <ToastContainer />
         </div>
