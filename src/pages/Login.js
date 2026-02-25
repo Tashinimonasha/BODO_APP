@@ -104,7 +104,7 @@ const Login = () => {
           <h1 className="text-3xl font-bold text-gray-800 mb-2">Welcome! Glad to see you.</h1>
           <p className="text-l text-gray-600 mb-6">Let’s Begin the Journey</p>
 
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} autoComplete="off">
             <div className="mb-4">
               <label htmlFor="username" className="block text-sm font-medium text-gray-600 mb-2">
                 Email
@@ -116,6 +116,10 @@ const Login = () => {
                 value={formData.username}
                 onChange={handleChange}
                 placeholder="Enter Your Email"
+                autoComplete="off"
+                autoCorrect="off"
+                autoCapitalize="off"
+                spellCheck={false}
                 className="w-full px-4 py-2 border rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-950"
               />
               {errors.username && (
@@ -135,6 +139,10 @@ const Login = () => {
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="Enter Your Password"
+                  autoComplete="new-password"
+                  autoCorrect="off"
+                  autoCapitalize="off"
+                  spellCheck={false}
                   className="w-full px-4 py-2 border rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-950"
                 />
                 <button

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
@@ -7,6 +8,7 @@ import backgroundImage from "../assets/backgrounds/background.png";
 const apiUrl = process.env.REACT_APP_API_URL;
 
 const Register = () => {
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(false); // Loading state
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -113,6 +115,11 @@ const Register = () => {
                         password: "",
                         confirmPassword: "",
                     });
+
+                    // Navigate to login page after 3 seconds
+                    setTimeout(() => {
+                        navigate('/login');
+                    }, 3000);
                 } else {
                     toast.error(result.message || 'Something went wrong', {
                         position: "top-right",
@@ -153,7 +160,7 @@ const Register = () => {
                     <h1 className="text-3xl font-bold text-gray-800 mb-2">REGISTER</h1>
                     <p className="text-sm text-gray-600 mb-6">Create an account to get started!</p>
 
-                    <form onSubmit={handleSubmit}>
+                    <form onSubmit={handleSubmit} autoComplete="off">
                         <div className="mb-4">
                             <label htmlFor="name" className="block text-sm font-medium text-gray-600 mb-2">
                                 Full Name
@@ -181,6 +188,10 @@ const Register = () => {
                                 value={formData.email}
                                 onChange={handleChange}
                                 placeholder="Email Address"
+                                autoComplete="off"
+                                autoCorrect="off"
+                                autoCapitalize="off"
+                                spellCheck={false}
                                 className="w-full px-4 py-2 border rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-400"
                             />
                             {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
@@ -198,6 +209,10 @@ const Register = () => {
                                     value={formData.password}
                                     onChange={handleChange}
                                     placeholder="Password"
+                                    autoComplete="new-password"
+                                    autoCorrect="off"
+                                    autoCapitalize="off"
+                                    spellCheck={false}
                                     className="w-full px-4 py-2 border rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-400"
                                 />
                                 <button
@@ -223,6 +238,10 @@ const Register = () => {
                                     value={formData.confirmPassword}
                                     onChange={handleChange}
                                     placeholder="Confirm Password"
+                                    autoComplete="new-password"
+                                    autoCorrect="off"
+                                    autoCapitalize="off"
+                                    spellCheck={false}
                                     className="w-full px-4 py-2 border rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-400"
                                 />
                                 <button

@@ -5,6 +5,7 @@ import { FaHeart, FaRegHeart, FaArrowLeft, FaTimes } from 'react-icons/fa';
 import { AiFillStar, AiOutlineStar } from 'react-icons/ai';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ReportingModal from '../components/ReportingModal';
 const apiUrl = process.env.REACT_APP_API_URL;
 
 const BoardingDetailsPage = () => {
@@ -20,6 +21,7 @@ const BoardingDetailsPage = () => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [isImageModalOpen, setIsImageModalOpen] = useState(false);
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+    const [showReportModal, setShowReportModal] = useState(false);
     const [paymentDetails, setPaymentDetails] = useState({
         cardNumber: '',
         cardName: '',
@@ -124,6 +126,20 @@ const BoardingDetailsPage = () => {
             console.error('Error saving boarding:', error);
             toast.error('Boarding Already Saved!');
         }
+    };
+
+    // ** Handle Report Button Click **
+    const handleReportClick = () => {
+        if (!user) {
+            toast.error('You must be logged in to report a listing.');
+            navigate('/login');
+            return;
+        }
+        setShowReportModal(true);
+    };
+
+    const closeReportModal = () => {
+        setShowReportModal(false);
     };
 
     // ** Handle Payment Button Click **
@@ -324,8 +340,20 @@ const BoardingDetailsPage = () => {
                         </span>
                     )}
                 </div>
-                <div onClick={handleSaveToggle} className="cursor-pointer">
-                    {isSaved ? <FaHeart size={30} className="text-red-600" /> : <FaRegHeart size={30} />}
+                <div className="flex items-center gap-4">
+                    <div onClick={handleSaveToggle} className="cursor-pointer hover:scale-110 transition-transform">
+                        {isSaved ? <FaHeart size={30} className="text-red-600" /> : <FaRegHeart size={30} />}
+                    </div>
+                    <button
+                        onClick={handleReportClick}
+                        className="p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-all hover:scale-110 shadow-md"
+                        title="Report this listing"
+                    >
+                        {/* Red Flag Icon */}
+                        <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M3 3h18v2H3V3zm0 4h18v12c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V7zm2 2v10h14V9H5z"/>
+                        </svg>
+                    </button>
                 </div>
             </div>
 
@@ -502,12 +530,12 @@ const BoardingDetailsPage = () => {
                                     <span className="font-semibold">LKR {(Number(boardingDetails.price) / 2).toFixed(2)}</span>
                                 </div>
                                 <div className="flex justify-between text-gray-700">
-                                    <span>Key Money Deposit</span>
-                                    <span className="font-semibold">LKR {(Number(boardingDetails.price) / 2).toFixed(2)}</span>
+                                    <span>Key Money Deposit <span className="text-sm text-gray-500">(2 months)</span></span>
+                                    <span className="font-semibold">LKR {(Number(boardingDetails.price) * 2).toFixed(2)}</span>
                                 </div>
                                 <div className="flex justify-between text-gray-900 font-bold text-lg pt-2 border-t border-gray-300">
                                     <span>Total Due Now:</span>
-                                    <span>LKR {Number(boardingDetails.price).toFixed(2)}</span>
+                                    <span>LKR {(Number(boardingDetails.price) / 2 + Number(boardingDetails.price) * 2).toFixed(2)}</span>
                                 </div>
                             </div>
 
@@ -624,6 +652,14 @@ const BoardingDetailsPage = () => {
                     </div>
                 </div>
             )}
+
+            {/* Reporting Modal */}
+            <ReportingModal
+                isOpen={showReportModal}
+                onClose={closeReportModal}
+                listingId={boardingId}
+                listingTitle={boardingDetails?.title}
+            />
 
             {/* ToastContainer displaying notifications */}
             <ToastContainer />
