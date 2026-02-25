@@ -29,6 +29,8 @@ const PaymentHistory = () => {
     const [userReviews, setUserReviews] = useState([]);
     const [loadingReviews, setLoadingReviews] = useState(false);
     const [selectedUserForReviews, setSelectedUserForReviews] = useState(null);
+    const [badges, setBadges] = useState({});
+    const [updatingBadge, setUpdatingBadge] = useState(null);
 
     useEffect(() => {
         const fetchPaymentHistory = async () => {
@@ -46,8 +48,19 @@ const PaymentHistory = () => {
                     },
                 });
 
-                setPayments(response.data.data || []);
+                const paymentsData = response.data.data || [];
+                setPayments(paymentsData);
                 setTotalPayments(response.data.count || 0);
+
+                // Initialize badges from payment data if available
+                const badgesMap = {};
+                paymentsData.forEach(payment => {
+                    if (payment.badges && Array.isArray(payment.badges) && payment.badges.length > 0) {
+                        badgesMap[payment.id] = payment.badges[0]; // Store the first badge object
+                    }
+                });
+                setBadges(badgesMap);
+
                 setLoading(false);
             } catch (error) {
                 setError(error.response?.data?.message || 'Error fetching payment history');
@@ -186,13 +199,86 @@ const PaymentHistory = () => {
 
     // ** Format Date **
     const formatReviewDate = (dateString) => {
-        return new Date(dateString).toLocaleDateString('en-US', {
+        let date;
+        
+        // Check if dateString is a Firestore timestamp object
+        if (dateString && typeof dateString === 'object' && '_seconds' in dateString) {
+            // Convert Firestore timestamp to JavaScript Date
+            date = new Date(dateString._seconds * 1000);
+        } else if (dateString && typeof dateString === 'object' && 'toDate' in dateString) {
+            // Handle Firestore Timestamp object
+            date = dateString.toDate();
+        } else {
+            date = new Date(dateString);
+        }
+        
+        // Check if date is valid
+        if (isNaN(date.getTime())) {
+            return 'Invalid Date';
+        }
+        
+        return date.toLocaleDateString('en-US', {
             year: 'numeric',
             month: 'short',
             day: 'numeric',
             hour: '2-digit',
             minute: '2-digit'
         });
+    };
+
+    // ** Handle Badge Toggle **
+    const handleToggleBadge = async (paymentId, email) => {
+        setUpdatingBadge(paymentId);
+        const token = localStorage.getItem('token');
+        const currentBadgeStatus = badges[paymentId] || false;
+        const newBadgeStatus = !currentBadgeStatus;
+
+        try {
+            // Update local state immediately for better UX
+            setBadges(prev => ({
+                ...prev,
+                [paymentId]: newBadgeStatus
+            }));
+
+            // Call backend API to save badge status
+            const response = await axios.post(
+                `${apiUrl}/payment/toggle-badge`,
+                {
+                    paymentId: paymentId,
+                    badgeName: "On-Time Payment",
+                    awardedDate: new Date().toISOString() // Send ISO timestamp string instead
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            // Update badges with the full badge object from response
+            if (response.data?.data?.badges && Array.isArray(response.data.data.badges)) {
+                setBadges(prev => ({
+                    ...prev,
+                    [paymentId]: response.data.data.badges[0] || null
+                }));
+            }
+
+            toast.success(
+                newBadgeStatus 
+                    ? '✨ On-Time Payment Badge awarded!' 
+                    : '❌ On-Time Payment Badge removed!'
+            );
+        } catch (error) {
+            console.error('Error toggling badge:', error);
+            toast.error(error.response?.data?.message || 'Error updating badge');
+            // Revert the state if API fails
+            setBadges(prev => ({
+                ...prev,
+                [paymentId]: currentBadgeStatus
+            }));
+        } finally {
+            setUpdatingBadge(null);
+        }
     };
 
     if (loading) {
@@ -275,8 +361,11 @@ const PaymentHistory = () => {
                                         <th scope="col" className="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">
                                             Payment Date
                                         </th>
-                                        <th scope="col" className="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">
+                        <th scope="col" className="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">
                                             Status
+                                        </th>
+                                        <th scope="col" className="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">
+                                            On-Time Badge
                                         </th>
                                         <th scope="col" className="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">
                                             Action
@@ -337,6 +426,42 @@ const PaymentHistory = () => {
                                                     }`}></span>
                                                     {payment.status.charAt(0).toUpperCase() + payment.status.slice(1)}
                                                 </span>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <div className="relative group">
+                                                    <button
+                                                        onClick={() => handleToggleBadge(payment.id, payment.paymentDoneByEmail)}
+                                                        disabled={updatingBadge === payment.id}
+                                                        className={`inline-flex items-center justify-center px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 ${
+                                                            badges[payment.id]
+                                                                ? 'bg-amber-100 text-amber-800 border border-amber-300 hover:bg-amber-200'
+                                                                : 'bg-gray-100 text-gray-600 border border-gray-300 hover:bg-gray-200'
+                                                        } ${updatingBadge === payment.id ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                                    >
+                                                        <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                                        </svg>
+                                                        {updatingBadge === payment.id ? 'Updating...' : (badges[payment.id] ? 'Badge Given' : 'Give Badge')}
+                                                    </button>
+                                                    
+                                                    {/* Tooltip */}
+                                                    {badges[payment.id] && (
+                                                        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block bg-gray-900 text-white text-xs rounded-lg py-2 px-3 whitespace-nowrap z-10">
+                                                            <p className="font-semibold">On-Time Payment Badge</p>
+                                                            <p className="text-gray-300">
+                                                                Awarded: {badges[payment.id].awardedDate ? formatDate(badges[payment.id].awardedDate) : 'Recently'}
+                                                            </p>
+                                                            <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+                                                        </div>
+                                                    )}
+
+                                                    {!badges[payment.id] && (
+                                                        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block bg-gray-900 text-white text-xs rounded-lg py-2 px-3 whitespace-nowrap z-10">
+                                                            Click to award badge for on-time payment
+                                                            <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+                                                        </div>
+                                                    )}
+                                                </div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 {isLatestPaymentForUser(payment.id) && (
@@ -526,7 +651,42 @@ const PaymentHistory = () => {
                             <p className="text-gray-600 mt-2">{selectedUserForReviews}</p>
                         </div>
 
-                        {/* Loading State */}
+                        {/* Badge Display Section */}
+                        {!loadingReviews && (
+                            <>
+                                {payments.find(p => p.paymentDoneByEmail === selectedUserForReviews)?.badges && 
+                                 payments.find(p => p.paymentDoneByEmail === selectedUserForReviews)?.badges.length > 0 ? (
+                                    <div className="mb-6 bg-gradient-to-r from-amber-50 to-yellow-50 border-2 border-amber-200 rounded-lg p-4">
+                                        <div className="flex items-start gap-3">
+                                            <div className="flex-shrink-0">
+                                                <svg className="w-6 h-6 text-amber-600 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                                </svg>
+                                            </div>
+                                            <div className="flex-1">
+                                                <h3 className="text-lg font-bold text-amber-900 mb-2">On-Time Payment Badge</h3>
+                                                <div className="space-y-2">
+                                                    {payments.find(p => p.paymentDoneByEmail === selectedUserForReviews)?.badges.map((badge, idx) => (
+                                                        <div key={idx} className="text-sm text-amber-800">
+                                                            <p className="font-semibold">✓ {badge.name}</p>
+                                                            <p className="text-xs text-amber-700 mt-1">
+                                                                Awarded on: {badge.awardedDate ? formatDate(badge.awardedDate) : 'Recently'}
+                                                            </p>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="mb-6 bg-gray-50 border border-gray-200 rounded-lg p-4">
+                                        <p className="text-sm text-gray-600">
+                                            <span className="font-semibold">No badges earned yet</span> - This user doesn't have any on-time payment badges
+                                        </p>
+                                    </div>
+                                )}
+                            </>
+                        )}
                         {loadingReviews && (
                             <div className="flex justify-center items-center py-12">
                                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
@@ -540,8 +700,7 @@ const PaymentHistory = () => {
                                     <div className="space-y-4">
                                         {userReviews.map((review, index) => (
                                             <div key={review.id || index} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                                                {/* Review Header */}
-                                                <div className="flex items-start justify-between mb-3">
+                                                    <div className="flex items-start justify-between mb-3">
                                                     <div className="flex items-center gap-2">
                                                         {/* Star Rating */}
                                                         <div className="flex text-yellow-400">
@@ -558,7 +717,7 @@ const PaymentHistory = () => {
                                                         <span className="text-sm font-bold text-gray-700 ml-2">{review.rating}/5</span>
                                                     </div>
                                                     <span className="text-xs text-gray-500">
-                                                        {formatReviewDate(review.createdAt)}
+                                                        {review.createdAt ? formatReviewDate(review.createdAt) : 'Date unavailable'}
                                                     </span>
                                                 </div>
 

@@ -155,9 +155,31 @@ const BoardingDetailsPage = () => {
     // ** Handle Payment Details Change **
     const handlePaymentDetailsChange = (e) => {
         const { name, value } = e.target;
+        let formattedValue = value;
+
+        // Format Card Number (spaces every 4 digits)
+        if (name === 'cardNumber') {
+            formattedValue = value.replace(/\s/g, '').replace(/(\d{4})/g, '$1 ').trim();
+            formattedValue = formattedValue.replace(/[^0-9\s]/g, '');
+        }
+
+        // Format Expiry Date (MM/YY)
+        if (name === 'expiryDate') {
+            formattedValue = value.replace(/[^0-9]/g, '');
+            if (formattedValue.length >= 2) {
+                formattedValue = formattedValue.slice(0, 2) + '/' + formattedValue.slice(2, 4);
+            }
+            formattedValue = formattedValue.slice(0, 5);
+        }
+
+        // Format CVV (only numbers)
+        if (name === 'cvv') {
+            formattedValue = value.replace(/[^0-9]/g, '').slice(0, 3);
+        }
+
         setPaymentDetails(prev => ({
             ...prev,
-            [name]: value
+            [name]: formattedValue
         }));
     };
 
@@ -556,50 +578,66 @@ const BoardingDetailsPage = () => {
 
                         {/* Payment Details */}
                         <div className="mb-6">
-                            <h3 className="text-lg font-bold text-gray-800 mb-3">Payment Details</h3>
-                            <div className="grid grid-cols-2 gap-4">
-                                <input
-                                    type="text"
-                                    name="cardNumber"
-                                    value={paymentDetails.cardNumber}
-                                    onChange={handlePaymentDetailsChange}
-                                    placeholder="Card Number"
-                                    maxLength="19"
-                                    className="col-span-2 px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                                />
-                                <input
-                                    type="text"
-                                    name="cardName"
-                                    value={paymentDetails.cardName}
-                                    onChange={handlePaymentDetailsChange}
-                                    placeholder="Cardholder Name"
-                                    className="px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                                />
-                                <input
-                                    type="text"
-                                    name="expiryDate"
-                                    value={paymentDetails.expiryDate}
-                                    onChange={handlePaymentDetailsChange}
-                                    placeholder="Expiry Date (MM/YY)"
-                                    maxLength="5"
-                                    className="px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                                />
-                                <input
-                                    type="text"
-                                    name="cvv"
-                                    value={paymentDetails.cvv}
-                                    onChange={handlePaymentDetailsChange}
-                                    placeholder="CVV"
-                                    maxLength="3"
-                                    className="px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                                />
-                                <input
-                                    type="text"
-                                    name="cvv"
-                                    placeholder="CVV"
-                                    className="px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                                    disabled
-                                />
+                            <h3 className="text-lg font-bold text-gray-800 mb-3">Card Details</h3>
+                            <div className="space-y-4">
+                                {/* Card Number */}
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-2">Card Number</label>
+                                    <input
+                                        type="text"
+                                        name="cardNumber"
+                                        value={paymentDetails.cardNumber}
+                                        onChange={handlePaymentDetailsChange}
+                                        placeholder="1234 5678 9012 3456"
+                                        maxLength="19"
+                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm font-mono tracking-wider"
+                                    />
+                                    <p className="text-xs text-gray-500 mt-1">Enter 16-digit card number</p>
+                                </div>
+
+                                {/* Cardholder Name */}
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-2">Cardholder Name</label>
+                                    <input
+                                        type="text"
+                                        name="cardName"
+                                        value={paymentDetails.cardName}
+                                        onChange={handlePaymentDetailsChange}
+                                        placeholder="John Doe"
+                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm uppercase"
+                                    />
+                                    <p className="text-xs text-gray-500 mt-1">As shown on the card</p>
+                                </div>
+
+                                {/* Expiry Date and CVV Row */}
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-semibold text-gray-700 mb-2">Expiry Date</label>
+                                        <input
+                                            type="text"
+                                            name="expiryDate"
+                                            value={paymentDetails.expiryDate}
+                                            onChange={handlePaymentDetailsChange}
+                                            placeholder="MM/YY"
+                                            maxLength="5"
+                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm font-mono"
+                                        />
+                                        <p className="text-xs text-gray-500 mt-1">MM/YY format</p>
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-semibold text-gray-700 mb-2">CVV</label>
+                                        <input
+                                            type="password"
+                                            name="cvv"
+                                            value={paymentDetails.cvv}
+                                            onChange={handlePaymentDetailsChange}
+                                            placeholder="•••"
+                                            maxLength="3"
+                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm font-mono tracking-widest"
+                                        />
+                                        <p className="text-xs text-gray-500 mt-1">3-digit security code</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 

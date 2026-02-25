@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { FaTrashAlt, FaSearch, FaFlag } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
@@ -18,6 +19,11 @@ const AdminListingsPage = () => {
   const [activeTab, setActiveTab] = useState('listings'); // 'listings' or 'reports'
   const [deleteModal, setDeleteModal] = useState({ isOpen: false, listingId: null, listingTitle: null });
   const [isDeleting, setIsDeleting] = useState(false);
+  const [reportModal, setReportModal] = useState({ isOpen: false, reportId: null, listingTitle: null });
+  const [isDeletingReport, setIsDeletingReport] = useState(false);
+  const [listingsPage, setListingsPage] = useState(1);
+  const [reportsPage, setReportsPage] = useState(1);
+  const itemsPerPage = 10;
 
   // ** Fetch all listings **
   useEffect(() => {
@@ -50,6 +56,7 @@ const AdminListingsPage = () => {
   useEffect(() => {
     const fetchReports = async () => {
       try {
+        setLoading(true);
         const token = localStorage.getItem('token');
         const response = await axios.get(`${apiUrl}/boarding/reports/all`, {
           headers: {
@@ -57,10 +64,13 @@ const AdminListingsPage = () => {
           },
         });
         setReports(response.data.data || []);
+        setError(null);
       } catch (err) {
         console.error('Error fetching reports:', err);
         toast.error('Error fetching reports');
         setReports([]);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -74,33 +84,64 @@ const AdminListingsPage = () => {
   );
 
   const filteredReports = reports.filter((report) =>
-    report?.listing_title?.toLowerCase().includes(searchTerm.toLowerCase())
+    report?.listingTitle?.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  // ** Pagination for listings **
+  const listingsStartIndex = (listingsPage - 1) * itemsPerPage;
+  const listingsEndIndex = listingsStartIndex + itemsPerPage;
+  const paginatedListings = filtered.slice(listingsStartIndex, listingsEndIndex);
+  const listingsTotalPages = Math.ceil(filtered.length / itemsPerPage);
+
+  // ** Pagination for reports **
+  const reportsStartIndex = (reportsPage - 1) * itemsPerPage;
+  const reportsEndIndex = reportsStartIndex + itemsPerPage;
+  const paginatedReports = filteredReports.slice(reportsStartIndex, reportsEndIndex);
+  const reportsTotalPages = Math.ceil(filteredReports.length / itemsPerPage);
 
   const deleteListing = (id, title) => {
     setDeleteModal({ isOpen: true, listingId: id, listingTitle: title });
   };
 
-  const handleRemoveListingFromReport = async (listingId, listingTitle) => {
-    const confirmRemove = window.confirm(
-      `Are you sure you want to remove the listing "${listingTitle}" due to reports?`
-    );
-    if (!confirmRemove) return;
+  const handleRemoveListingFromReport = (reportId, listingTitle) => {
+    setReportModal({ isOpen: true, reportId, listingTitle });
+  };
 
+  const confirmDeleteReport = async () => {
+    const { reportId } = reportModal;
+    setIsDeletingReport(true);
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`${apiUrl}/boarding/delete/${listingId}`, {
+      await axios.delete(`${apiUrl}/boarding/reports/${reportId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      toast.success('Listing removed successfully');
-      setReports(reports.filter(r => r.listing_id !== listingId));
-      setListings(listings.filter(l => l.id !== listingId));
+      toast.success('Report deleted successfully');
+      setReports(reports.filter(r => r.id !== reportId));
+      setReportModal({ isOpen: false, reportId: null, listingTitle: null });
     } catch (err) {
-      console.error('Error removing listing:', err);
-      toast.error('Failed to remove listing');
+      console.error('Error deleting report:', err);
+      toast.error('Failed to delete report');
+    } finally {
+      setIsDeletingReport(false);
     }
+  };
+
+  const cancelDeleteReport = () => {
+    setReportModal({ isOpen: false, reportId: null, listingTitle: null });
+  };
+
+  // ** Group reports by listing title **
+  const groupedReports = () => {
+    const grouped = {};
+    filteredReports.forEach((report) => {
+      if (!grouped[report.listingTitle]) {
+        grouped[report.listingTitle] = [];
+      }
+      grouped[report.listingTitle].push(report);
+    });
+    return grouped;
   };
 
   const confirmDeleteListing = async () => {
@@ -203,62 +244,109 @@ const AdminListingsPage = () => {
 
           {/* Listings Table */}
           {!loading && listings.length > 0 && (
-            <div className="overflow-x-auto shadow-xl rounded-lg border border-gray-200 bg-white">
-              <table className="min-w-full text-sm text-left text-gray-600">
-                <thead className="bg-blue-600 text-white uppercase text-xs tracking-wider">
-                  <tr>
-                    <th className="px-5 py-3">Title</th>
-                    <th className="px-5 py-3">Description</th>
-                    <th className="px-5 py-3">Type</th>
-                    <th className="px-5 py-3">Price</th>
-                    <th className="px-5 py-3">District</th>
-                    <th className="px-5 py-3">Location</th>
-                <th className="px-5 py-3">Phone</th>
-                <th className="px-5 py-3">Status</th>
-                <th className="px-5 py-3 text-center">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((listing) => (
-                <tr key={listing.id} className="border-t hover:bg-blue-50 transition">
-                  <td className="px-5 py-4 font-medium">{listing.title}</td>
-                  <td className="px-5 py-4 text-xs">{listing.description?.substring(0, 50)}...</td>
-                  <td className="px-5 py-4">{listing.type}</td>
-                  <td className="px-5 py-4">LKR {listing.price}</td>
-                  <td className="px-5 py-4">{listing.district}</td>
-                  <td className="px-5 py-4">{listing.location}</td>
-                  <td className="px-5 py-4">{listing.phone}</td>
-                  <td className="px-5 py-4">
-                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                      listing.isAvailable
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-red-100 text-red-800'
-                    }`}>
-                      {listing.isAvailable ? 'Available' : 'Not Available'}
-                    </span>
-                  </td>
-                  <td className="px-5 py-4 text-center">
+            <>
+              <div className="shadow-xl rounded-lg border border-gray-200 bg-white">
+                <div className="overflow-x-auto">
+                  <table className="min-w-full text-sm text-left text-gray-600">
+                    <thead className="bg-blue-600 text-white uppercase text-xs tracking-wider">
+                      <tr>
+                        <th className="px-5 py-3">Title</th>
+                        <th className="px-5 py-3">Description</th>
+                        <th className="px-5 py-3">Type</th>
+                        <th className="px-5 py-3">Price</th>
+                        <th className="px-5 py-3">District</th>
+                        <th className="px-5 py-3">Location</th>
+                    <th className="px-5 py-3">Phone</th>
+                    <th className="px-5 py-3">Status</th>
+                    <th className="px-5 py-3 text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {paginatedListings.map((listing) => (
+                    <tr key={listing.id} className="border-t hover:bg-blue-50 transition">
+                      <td className="px-5 py-4 font-medium">{listing.title}</td>
+                      <td className="px-5 py-4 text-xs relative group">
+                        <span>{listing.description?.substring(0, 50)}...</span>
+                        <div className="absolute left-0 top-full hidden group-hover:block bg-gray-800 text-white text-sm rounded-lg p-3 z-10 w-48 mt-2 shadow-lg">
+                          {listing.description}
+                        </div>
+                      </td>
+                      <td className="px-5 py-4">{listing.type}</td>
+                      <td className="px-5 py-4">LKR {listing.price}</td>
+                      <td className="px-5 py-4">{listing.district}</td>
+                      <td className="px-5 py-4">{listing.location}</td>
+                      <td className="px-5 py-4">{listing.phone}</td>
+                      <td className="px-5 py-4">
+                        <span className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap inline-block ${
+                          listing.isAvailable
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-red-100 text-red-800'
+                        }`}>
+                          {listing.isAvailable ? 'Available' : 'Not Available'}
+                        </span>
+                      </td>
+                      <td className="px-5 py-4 text-center">
+                        <button
+                          onClick={() => deleteListing(listing.id, listing.title)}
+                          className="text-red-600 hover:text-red-800 transition"
+                          title="Delete"
+                        >
+                          <FaTrashAlt size={16} />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                  {paginatedListings.length === 0 && (
+                    <tr>
+                      <td colSpan="9" className="text-center text-gray-500 py-6">
+                        No listings found.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Pagination Controls */}
+            <div className="flex items-center justify-between mt-6 px-2">
+              <div className="text-sm text-gray-600">
+                Showing {listingsStartIndex + 1} to {Math.min(listingsEndIndex, filtered.length)} of {filtered.length} listings
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setListingsPage(prev => Math.max(1, prev - 1))}
+                  disabled={listingsPage === 1}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-700 transition"
+                >
+                  Previous
+                </button>
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: listingsTotalPages }, (_, i) => i + 1).map((page) => (
                     <button
-                      onClick={() => deleteListing(listing.id, listing.title)}
-                      className="text-red-600 hover:text-red-800 transition"
-                      title="Delete"
+                      key={page}
+                      onClick={() => setListingsPage(page)}
+                      className={`px-3 py-2 rounded-lg transition ${
+                        listingsPage === page
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                      }`}
                     >
-                      <FaTrashAlt size={16} />
+                      {page}
                     </button>
-                  </td>
-                </tr>
-              ))}
-              {filtered.length === 0 && (
-                <tr>
-                  <td colSpan="9" className="text-center text-gray-500 py-6">
-                    No listings found.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      )}
+                  ))}
+                </div>
+                <button
+                  onClick={() => setListingsPage(prev => Math.min(listingsTotalPages, prev + 1))}
+                  disabled={listingsPage === listingsTotalPages}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-700 transition"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          </div>
+            </>
+          )}
 
       {/* Empty State - Listings */}
       {!loading && listings.length === 0 && !error && activeTab === 'listings' && (
@@ -287,63 +375,95 @@ const AdminListingsPage = () => {
 
           {/* Reports Table */}
           {reports.length > 0 && (
-            <div className="overflow-x-auto shadow-xl rounded-lg border border-gray-200 bg-white">
-              <table className="min-w-full text-sm text-left text-gray-600">
-                <thead className="bg-red-600 text-white uppercase text-xs tracking-wider">
-                  <tr>
-                    <th className="px-5 py-3">Listing Title</th>
-                    <th className="px-5 py-3">Report Type</th>
-                    <th className="px-5 py-3">Description</th>
-                    <th className="px-5 py-3">Reported By Email</th>
-                    <th className="px-5 py-3">Reported Date</th>
-                    <th className="px-5 py-3">Status</th>
-                    <th className="px-5 py-3 text-center">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredReports.map((report) => (
-                    <tr key={report.id} className="border-t hover:bg-red-50 transition">
-                      <td className="px-5 py-4 font-medium">{report.listing_title}</td>
-                      <td className="px-5 py-4">
-                        <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-xs font-semibold">
-                          {report.report_type}
-                        </span>
-                      </td>
-                      <td className="px-5 py-4 text-xs">{report.description?.substring(0, 50)}...</td>
-                      <td className="px-5 py-4 text-xs">{report.reported_by_email}</td>
-                      <td className="px-5 py-4 text-xs">{new Date(report.created_at).toLocaleDateString()}</td>
-                      <td className="px-5 py-4">
-                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                          report.status === 'pending'
-                            ? 'bg-blue-100 text-blue-800'
-                            : report.status === 'resolved'
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-gray-100 text-gray-800'
-                        }`}>
-                          {report.status}
-                        </span>
-                      </td>
-                      <td className="px-5 py-4 text-center">
-                        <button
-                          onClick={() => handleRemoveListingFromReport(report.listing_id, report.listing_title)}
-                          className="text-red-600 hover:text-red-800 hover:bg-red-100 px-3 py-2 rounded transition flex items-center justify-center gap-2"
-                          title="Remove Listing"
-                        >
-                          <FaTrashAlt size={14} /> Remove
-                        </button>
-                      </td>
-                    </tr>
+            <>
+              <div className="space-y-6">
+                {Object.entries(groupedReports())
+                  .slice(reportsStartIndex, reportsEndIndex)
+                  .map(([listingTitle, groupReports]) => (
+                    <div key={listingTitle} className="border border-gray-200 rounded-lg overflow-hidden shadow-lg">
+                      {/* Listing Header */}
+                      <div className="bg-blue-600 text-white px-5 py-4">
+                        <h3 className="text-lg font-bold">{listingTitle}</h3>
+                        <p className="text-sm text-blue-100">{groupReports.length} report{groupReports.length !== 1 ? 's' : ''}</p>
+                      </div>
+
+                      {/* Reports for this listing */}
+                      <div className="overflow-x-auto">
+                        <table className="min-w-full text-sm text-left text-gray-600">
+                          <thead className="bg-blue-50 border-b border-gray-200">
+                            <tr>
+                              <th className="px-5 py-3 font-bold text-blue-700 bg-blue-100">Report Reason</th>
+                              <th className="px-5 py-3 font-bold text-blue-700 bg-blue-100">Description</th>
+                              <th className="px-5 py-3 font-bold text-blue-700 bg-blue-100">Reported By</th>
+                              <th className="px-5 py-3 font-bold text-blue-700 bg-blue-100 text-center">Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {groupReports.map((report) => (
+                              <tr key={report.id} className="border-t hover:bg-blue-50 transition">
+                                <td className="px-5 py-4">
+                                  <span className="bg-red-50 text-red-700 px-3 py-1 rounded-full text-xs font-semibold border border-red-200">
+                                    {report.reason}
+                                  </span>
+                                </td>
+                                <td className="px-5 py-4 text-sm text-gray-700">{report.description}</td>
+                                <td className="px-5 py-4 text-sm">{report.reporterName}</td>
+                                <td className="px-5 py-4 text-center">
+                                  <button
+                                    onClick={() => handleRemoveListingFromReport(report.id, report.listingTitle)}
+                                    className="text-red-600 hover:text-red-800 hover:bg-red-100 px-3 py-2 rounded transition inline-flex items-center justify-center gap-2"
+                                    title="Delete Report"
+                                  >
+                                    <FaTrashAlt size={14} /> Delete
+                                  </button>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
                   ))}
-                  {filteredReports.length === 0 && (
-                    <tr>
-                      <td colSpan="7" className="text-center text-gray-500 py-6">
-                        No reports found.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
+              </div>
+
+              {/* Pagination Controls for Reports */}
+              <div className="flex items-center justify-between mt-6 px-2">
+                <div className="text-sm text-gray-600">
+                  Showing {reportsStartIndex + 1} to {Math.min(reportsEndIndex, Object.keys(groupedReports()).length)} of {Object.keys(groupedReports()).length} listings with reports
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setReportsPage(prev => Math.max(1, prev - 1))}
+                    disabled={reportsPage === 1}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-700 transition"
+                  >
+                    Previous
+                  </button>
+                  <div className="flex items-center gap-1">
+                    {Array.from({ length: reportsTotalPages }, (_, i) => i + 1).map((page) => (
+                      <button
+                        key={page}
+                        onClick={() => setReportsPage(page)}
+                        className={`px-3 py-2 rounded-lg transition ${
+                          reportsPage === page
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    ))}
+                  </div>
+                  <button
+                    onClick={() => setReportsPage(prev => Math.min(reportsTotalPages, prev + 1))}
+                    disabled={reportsPage === reportsTotalPages}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-700 transition"
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
+            </>
           )}
 
           {/* Empty State - Reports */}
@@ -394,6 +514,50 @@ const AdminListingsPage = () => {
                 }`}
               >
                 {isDeleting ? 'Deleting...' : 'Delete'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Report Deletion Modal */}
+      {reportModal.isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md p-8 relative">
+            {/* Icon */}
+            <div className="flex justify-center mb-4">
+              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
+                <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4v2m0 4h.01m-6.938-4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+              </div>
+            </div>
+
+            {/* Title and Message */}
+            <h2 className="text-2xl font-bold text-gray-900 text-center mb-2">Delete Report</h2>
+            <p className="text-gray-600 text-center mb-6">
+              Are you sure you want to delete the report for <span className="font-semibold text-gray-900">{reportModal.listingTitle}</span>? This action cannot be undone.
+            </p>
+
+            {/* Action Buttons */}
+            <div className="flex gap-4">
+              <button
+                onClick={cancelDeleteReport}
+                disabled={isDeletingReport}
+                className="flex-1 py-3 px-6 border-2 border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition-all disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDeleteReport}
+                disabled={isDeletingReport}
+                className={`flex-1 py-3 px-6 rounded-lg font-semibold text-white transition-all ${
+                  isDeletingReport
+                    ? 'bg-gray-400 cursor-not-allowed'
+                    : 'bg-red-600 hover:bg-red-700'
+                }`}
+              >
+                {isDeletingReport ? 'Deleting...' : 'Delete'}
               </button>
             </div>
           </div>

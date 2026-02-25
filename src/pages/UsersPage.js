@@ -17,20 +17,75 @@ const UsersPage = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const apiLimit = 100; // Increased to fetch more users per request
 
-  // ** Fetch all users **
+  // ** Fetch all users with pagination **
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchAllUsers = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${apiUrl}/user/get-all-users`);
-        
-        if (!response.ok) {
-          throw new Error('Failed to fetch users');
+        let allUsers = [];
+        let offset = 0;
+        let hasMore = true;
+        let attemptCount = 0;
+        const maxAttempts = 20; // Prevent infinite loops
+
+        // Keep fetching until hasMore is false or max attempts reached
+        while (hasMore && attemptCount < maxAttempts) {
+          console.log(`Fetching batch ${attemptCount + 1} at offset ${offset}...`);
+          
+          const response = await fetch(`${apiUrl}/user/get-all-users?limit=${apiLimit}&offset=${offset}`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+          
+          if (!response.ok) {
+            throw new Error('Failed to fetch users');
+          }
+
+          const data = await response.json();
+          console.log(`Batch ${attemptCount + 1} response:`, {
+            dataLength: data.data?.length,
+            total: data.total,
+            hasMoreFlag: data.pagination?.hasMore,
+            pagination: data.pagination
+          });
+          
+          const fetchedUsers = data.data || [];
+          
+          // If API returns total count, use that to determine when to stop
+          const totalCount = data.total || data.totalCount || data.count;
+          
+          allUsers = [...allUsers, ...fetchedUsers];
+          
+          console.log(`After batch ${attemptCount + 1}: ${allUsers.length} total users collected`);
+          
+          // Determine if there are more pages
+          if (data.pagination?.hasMore === false) {
+            console.log('API indicates no more pages (hasMore=false)');
+            hasMore = false;
+          } else if (fetchedUsers.length < apiLimit) {
+            console.log(`Fetched ${fetchedUsers.length} users < limit ${apiLimit}, stopping pagination`);
+            hasMore = false;
+          } else if (totalCount && allUsers.length >= totalCount) {
+            console.log(`Reached total count: ${allUsers.length} >= ${totalCount}`);
+            hasMore = false;
+          }
+          
+          offset += apiLimit;
+          attemptCount++;
         }
 
-        const data = await response.json();
-        setUsers(data.data || []);
+        console.log('Final total users fetched:', allUsers.length);
+        console.log('All users:', allUsers);
+        
+        // Remove duplicates if any
+        const uniqueUsers = Array.from(new Map(allUsers.map(user => [user.id, user])).values());
+        console.log('Unique users after deduplication:', uniqueUsers.length);
+        
+        setUsers(uniqueUsers);
         setError(null);
       } catch (err) {
         console.error('Error fetching users:', err);
@@ -42,12 +97,16 @@ const UsersPage = () => {
       }
     };
 
-    fetchUsers();
+    fetchAllUsers();
   }, []);
 
-  const filtered = users.filter((user) =>
-    user?.name?.toLowerCase().includes(searchName.toLowerCase())
-  );
+  const filtered = users.filter((user) => {
+    // Try filtering by name, username, or email
+    const nameMatch = user?.name?.toLowerCase().includes(searchName.toLowerCase());
+    const usernameMatch = user?.username?.toLowerCase().includes(searchName.toLowerCase());
+    const emailMatch = user?.email?.toLowerCase().includes(searchName.toLowerCase());
+    return nameMatch || usernameMatch || emailMatch;
+  });
 
   // Reset to page 1 when search changes
   useEffect(() => {
@@ -139,7 +198,8 @@ const UsersPage = () => {
         ← Back to Dashboard
       </button>
 
-      <h2 className="text-4xl font-bold text-gray-800 mb-8">👤 Registered Users</h2>
+      <h2 className="text-4xl font-bold text-gray-800 mb-2">👤 Registered Users</h2>
+      <p className="text-lg text-gray-600 mb-8">Total: <span className="font-bold text-blue-600">{users.length}</span> users</p>
 
       {/* Loading State */}
       {loading && (
@@ -184,7 +244,7 @@ const UsersPage = () => {
             <tbody>
               {currentUsers.map((user) => (
                 <tr key={user.id} className="border-t hover:bg-purple-50 transition">
-                  <td className="px-5 py-4 font-medium">{user.name}</td>
+                  <td className="px-5 py-4 font-medium">{user.name || user.username}</td>
                   <td className="px-5 py-4">{user.email}</td>
                   <td className="px-5 py-4">{user.phone || 'N/A'}</td>
                   <td className="px-5 py-4">
@@ -192,7 +252,7 @@ const UsersPage = () => {
                   </td>
                   <td className="px-5 py-4 text-center">
                     <button
-                      onClick={() => deleteUser(user.id, user.name)}
+                      onClick={() => deleteUser(user.id, user.name || user.username)}
                       className="text-red-600 hover:text-red-800 transition"
                       title="Delete"
                     >
